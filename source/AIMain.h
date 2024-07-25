@@ -76,7 +76,7 @@ private:
 	static std::string generateContext() {
 		std::lock_guard<std::mutex> lock(historyMutex);
 		if (history.empty()) {
-			return "System: You meet the player-controlled protagonist, CJ. Now you say a short, character-appropriate greeting";
+			return Config::getMeetPrompt();
 		}
 		else {
 			return history.back().toString();

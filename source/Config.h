@@ -10,9 +10,11 @@ private:
     static std::string url;
     static std::string api_key;
     static std::string model;
+    static bool cn;
     static int svc_timeout;
     static int reinst_time;
     static std::string global_prompt;
+    static std::string meet_prompt;
     static std::map<std::string, std::string> sys_prompt;
     static int content_buffer_size;
     static int audio_buffer_size;
@@ -33,6 +35,10 @@ public:
         return model;
     }
 
+    static bool getCN() {
+        return cn;
+    }
+
     static int getSVCTimeout() {
         return svc_timeout;
     }
@@ -43,6 +49,10 @@ public:
 
     static std::string getGlobalPrompt() {
         return global_prompt;
+    }
+
+    static std::string getMeetPrompt() {
+        return meet_prompt;
     }
 
     static std::string getSysPrompt(std::string name) {
@@ -79,12 +89,25 @@ public:
             url = reader.Get("ChatGPT", "url", "");
             api_key = reader.Get("ChatGPT", "api_key", "");
             model = reader.Get("ChatGPT", "model", "");
+            cn = reader.GetInteger("ChatGPT", "cn", 1) == 1;
             svc_timeout = reader.GetInteger("TTS-SVC", "timeout", 5);
             reinst_time = reader.GetInteger("TTS-SVC", "reinstall", 1000);
-            global_prompt = reader.Get("Personality", "global_prompt", "");
-            for (auto& t : sys_prompt) {
-                t.second = reader.Get("Personality", t.first, "");
+
+            if (cn) {
+                global_prompt = reader.Get("Promnpt_CN", "global_prompt", "");
+                meet_prompt = reader.Get("Promnpt_CN", "meet_prompt", "");
+                for (auto& t : sys_prompt) {
+                    t.second = reader.Get("Personality_CN", t.first, "");
+                }
             }
+            else {
+                global_prompt = reader.Get("Promnpt", "global_prompt", "");
+                meet_prompt = reader.Get("Promnpt", "meet_prompt", "");
+                for (auto& t : sys_prompt) {
+                    t.second = reader.Get("Personality", t.first, "");
+                }
+            }
+
             content_buffer_size = reader.GetInteger("Performance", "content_buffer_size", 3);
             audio_buffer_size = reader.GetInteger("Performance", "audio_buffer_size", 3);
             messages_size = reader.GetInteger("Performance", "messages_size", 5);
@@ -97,9 +120,11 @@ public:
         Log::printInfo("Url: " + url, "../SAAI.log");
         Log::printInfo("APIKEY: " + api_key, "../SAAI.log");
         Log::printInfo("model: " + model, "../SAAI.log");
+        Log::printInfo("cn: " + std::to_string(cn), "../SAAI.log");
         Log::printInfo("svc_timeout: " + std::to_string(svc_timeout), "../SAAI.log"); 
         Log::printInfo("reinst_time: " + std::to_string(reinst_time), "../SAAI.log");
-        Log::printInfo(global_prompt, "../SAAI.log");
+        Log::printInfo("global_prompt: " + global_prompt, "../SAAI.log");
+        Log::printInfo("meet_prompt: " + meet_prompt, "../SAAI.log");
         for (auto& t : sys_prompt) {
             Log::printInfo(t.first + " " + t.second, "../SAAI.log");
         }

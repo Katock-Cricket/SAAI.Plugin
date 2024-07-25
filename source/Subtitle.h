@@ -5,6 +5,7 @@
 
 #include "plugin.h"
 #include "CFont.h"
+#include "Config.h"
 
 using namespace plugin;
 
@@ -24,25 +25,41 @@ private:
     }
 
     static int calcDuring(const char* sentence) {
+        bool cn = Config::getCN();
+
         if (sentence == nullptr || strlen(sentence) == 0) {
             return 0;
         }
 
-        const double averageWordDuration = 0.5;
-        int wordCount = 0;
+        if (cn) {
+            const double averageCharDuration = 0.3;
+            int charCount = 0;
 
-        const char* delimiters = " ";
-        char* tempSentence = new char[strlen(sentence) + 1];
-        strcpy(tempSentence, sentence);
+            const unsigned char* ptr = reinterpret_cast<const unsigned char*>(sentence);
+            while (*ptr != '\0') {
+                charCount++;
+                ptr += 3;
+            }
 
-        char* token = strtok(tempSentence, delimiters);
-        while (token != nullptr) {
-            wordCount++;
-            token = strtok(nullptr, delimiters);
+            return static_cast<int>(charCount * averageCharDuration + 0.5);
         }
+        else {
+            const double averageWordDuration = 0.5;
+            int wordCount = 0;
 
-        delete[] tempSentence;
-        return static_cast<int>(wordCount * averageWordDuration + 0.5);
+            const char* delimiters = " ";
+            char* tempSentence = new char[strlen(sentence) + 1];
+            strcpy(tempSentence, sentence);
+
+            char* token = strtok(tempSentence, delimiters);
+            while (token != nullptr) {
+                wordCount++;
+                token = strtok(nullptr, delimiters);
+            }
+
+            delete[] tempSentence;
+            return static_cast<int>(wordCount * averageWordDuration + 0.5);
+        }
     }
 
 public:

@@ -87,7 +87,7 @@ public:
 			return audioPath;
 		}
 
-		std::string message = content + ";" + speaker;
+		std::string message = content + ";" + speaker + ";" + (Config::getCN()?"cn":"en");
 		send(sock, message.c_str(), message.length(), 0);
 
 		char buffer[1024] = { 0 };
