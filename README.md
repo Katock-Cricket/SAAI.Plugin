@@ -37,6 +37,10 @@ GTA San Andreas with AI，将大语言模型(GPT)、TTS、SOVITS整合进入圣�
 
 桥接[无名汉化补丁](https://github.com/WMHHZ/VC.SA.Plugin)（直接调用PrintString[0x71A210]，传入UTF-8编码的中文，自动JMP到无名重写的函数），以实现实时内容的中文字幕
 
+### 优化延时
+
+AI语音和连接GPT都会花时间，所以AI行为都是异步的，编写了AIBeh的三级请求队列，用流水线的方式生成连续对话内容。
+
 ## Server架构
 
 功能：生成对应NPC音色的AI语音
