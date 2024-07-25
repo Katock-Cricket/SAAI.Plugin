@@ -27,7 +27,7 @@ private:
 		if (cheat_pressed("CHS")) {
 			std::string text = Config::getTestSubtitle();
 			Log::printInfo("call 4, trigger RenderFontBuffer");
-			Subtitle::printSubtitle("ÄãºÃ");
+			Subtitle::printSubtitle(text);
 		}
 	}
 
