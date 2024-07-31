@@ -49,6 +49,7 @@ private:
 	static void activateChat() {
 		if (cheat_pressed("chat")) {
 			isChating = true;
+			CHud::SetHelpMessage("Free chat is luanching...", true, false, false);
 		}
 	}
 
@@ -56,6 +57,7 @@ private:
 		if (history.size() > 6) {
 			isChating = false;
 			history.clear();
+			CHud::SetHelpMessage("Free chat is over", true, false, false);
 		}
 	}
 
