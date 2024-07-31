@@ -20,7 +20,7 @@ public:
 		if (!Config::loadFromINI("SAAI.ini")) {
 			return;
 		}
-		std::thread t(&system, ".\\svc_server\\env\\python.exe .\\svc_server\\server.py");
+		std::thread t(&system, ".\\SAAI.Server\\env\\python.exe .\\SAAI.Server\\server.py");
 		t.detach();
 		pedSpawner.install();
 		subtitle.install();
