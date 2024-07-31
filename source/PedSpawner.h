@@ -62,13 +62,13 @@ private:
 			ped->GiveWeapon(WEAPON_AK47, 10000, true);
 			//ped->SetCurrentWeapon(WEAPON_AK47);
 			CStreaming::SetModelIsDeletable(MODEL_AK47);
-			AIMain::addAIPed(ped, "ryder");
+			addAIPed(ped, "ryder");
 			CHud::SetHelpMessage("Spawned Ryder", true, false, false);
 		}
 	}
 public: 
 	PedSpawner() {}
-	void install() {         
+	static void install() {         
 		Events::gameProcessEvent.Add(cheatSpawn);
 	}
 };

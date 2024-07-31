@@ -109,9 +109,15 @@ public:
 
     Subtitle() { }
 
-    void install() {
+    static void install() { // install when init
         Events::drawingEvent.Add(pedSpeakSubtitle);
         Events::drawingEvent.Add(otherSubtitle);
+    }
+
+    static void uninstall() { // uninstall when shutdown
+        std::lock_guard<std::mutex> lock(subtitleMutex);
+        activate = false;
+        pedSpeaking = nullptr;
     }
 
     static void printSubtitle(std::string usr_content, CPed* ped = nullptr) {

@@ -79,9 +79,17 @@ private:
 		}
 	}
 
+
+
 public:
-	static void install() {
+	static void install() { // install when init
 		Events::gameProcessEvent.Add(processSpeak);
+	}
+
+	static void uninstall() { // uninstall when shutdown
+		std::lock_guard<std::mutex> lock(speakMutex);
+		std::queue<SpeakTask>().swap(speakBuf);
+		pedSpeaking = nullptr;
 	}
 
 	static bool canAddSpeak() {

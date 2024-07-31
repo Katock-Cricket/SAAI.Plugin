@@ -11,9 +11,20 @@
 
 class SAAI {
 private:
-	PedSpawner pedSpawner;
-	Subtitle subtitle;
-	UnitTest unitTest;
+	static void installPipeline() {
+		PedSpawner::install();
+		Subtitle::install();
+		Speak::install();
+		UnitTest::install();
+		AIMain::install();
+	}
+
+	static void uninstPipeline() {
+		Subtitle::uninstall();
+		Speak::uninstall();
+		AIMain::uninstall();
+	}
+
 public:
 	SAAI() {
 		Log::install();
@@ -22,12 +33,10 @@ public:
 		}
 		std::thread t(&system, ".\\SAAI.Server\\env\\python.exe .\\SAAI.Server\\server.py");
 		t.detach();
-		pedSpawner.install();
-		subtitle.install();
-		unitTest.install();
-		Speak::install();
-		if (SVCClient::init_socket()) {
-			AIMain::install();
+		if (!SVCClient::init_socket()) {
+			return;
 		}
+		installPipeline();
+		Events::shutdownRwEvent.Add(uninstPipeline);
 	} 
 } SAAI;

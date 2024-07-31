@@ -18,7 +18,7 @@ class UnitTest : public CheatActivate, public KeyActivate {
 public:
 	UnitTest() {}
 
-	void install() {
+	static void install() {
 		Events::gameProcessEvent.Add(testCHS);
 		Events::gameProcessEvent.Add(testNRG);
 		Events::gameProcessEvent.Add(testSpeak);

@@ -99,15 +99,15 @@ public:
             reinst_time = reader.GetInteger("TTS-SVC", "reinstall", 1000);
 
             if (cn) {
-                global_prompt = reader.Get("Promnpt_CN", "global_prompt", "");
-                meet_prompt = reader.Get("Promnpt_CN", "meet_prompt", "");
+                global_prompt = reader.Get("Prompt_CN", "global_prompt", "");
+                meet_prompt = reader.Get("Prompt_CN", "meet_prompt", "");
                 for (auto& t : sys_prompt) {
                     t.second = reader.Get("Personality_CN", t.first, "");
                 }
             }
             else {
-                global_prompt = reader.Get("Promnpt", "global_prompt", "");
-                meet_prompt = reader.Get("Promnpt", "meet_prompt", "");
+                global_prompt = reader.Get("Prompt", "global_prompt", "");
+                meet_prompt = reader.Get("Prompt", "meet_prompt", "");
                 for (auto& t : sys_prompt) {
                     t.second = reader.Get("Personality", t.first, "");
                 }
