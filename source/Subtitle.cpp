@@ -2,5 +2,5 @@
 
 bool Subtitle::activate = false;
 char Subtitle::content[512] = "";
-int Subtitle::last = 2;
+CPed* Subtitle::pedSpeaking = nullptr;
 std::mutex Subtitle::subtitleMutex;

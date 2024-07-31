@@ -19,6 +19,7 @@ private:
     static int content_buffer_size;
     static int audio_buffer_size;
     static int messages_size;
+    static int speak_buffer_size;
     static std::string testSubtitle;
 
 
@@ -74,6 +75,10 @@ public:
         return messages_size;
     }
 
+    static unsigned int getSpeakbufferSize() {
+        return speak_buffer_size;
+    }
+
     static std::string getTestSubtitle() {
         return testSubtitle;
     }
@@ -111,6 +116,7 @@ public:
             content_buffer_size = reader.GetInteger("Performance", "content_buffer_size", 3);
             audio_buffer_size = reader.GetInteger("Performance", "audio_buffer_size", 3);
             messages_size = reader.GetInteger("Performance", "messages_size", 5);
+            speak_buffer_size = reader.GetInteger("Performance", "speak_buffer_size", 5);
             testSubtitle = reader.Get("CHS", "test_subtitle", "");
         }
         catch (std::exception& e) {
@@ -131,6 +137,7 @@ public:
         Log::printInfo("content_buffer_size: " + std::to_string(content_buffer_size), "../SAAI.log");
         Log::printInfo("audio_buffer_size: " + std::to_string(audio_buffer_size), "../SAAI.log");
         Log::printInfo("messages_size: " + std::to_string(messages_size), "../SAAI.log");
+        Log::printInfo("speak_buffer_size: " + std::to_string(speak_buffer_size), "../SAAI.log");
         Log::printInfo("test_subtitle: " + testSubtitle, "../SAAI.log");
         return true;
     }

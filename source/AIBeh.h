@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "AIPed.h"
 
 class AIBeh {
@@ -11,7 +11,9 @@ private:
 public:
 	AIBeh() {
 		self = nullptr;
+		this->working = false;
 	}
+
 	AIBeh(AIPed* self) {
 		this->self = self;
 		this->context = "";

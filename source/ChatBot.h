@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <curl/curl.h>
 #include <sstream>
 #include <string>
@@ -47,6 +47,24 @@ private:
 			Log::printInfo(",");
 		}
 		Log::printInfo("]");
+	}
+
+	std::string autoDeleteChara(const std::string& answer) {
+		std::string cnColon = "：";
+		std::string enColon = ":";
+
+		size_t posCn = answer.find(cnColon);
+		size_t posEn = answer.find(enColon);
+
+		size_t pos = min(posCn, posEn);
+
+		if (pos == std::string::npos) {
+			return answer;
+		}
+		std::string ret = answer.substr(pos + 1);
+		Log::printInfo("Chatbot's answer contains colon, oringin ans: " + answer);
+		Log::printInfo("auto delete colon: " + ret);
+		return ret;
 	}
 
 	JSON send()
@@ -165,7 +183,7 @@ public:
 			messages.push_back(item1);
 		}
 		messages.push_back(item);
-		Log::printInfo("push msg");
+		Log::printInfo("msg generated, push msg");
 		JSON res = send();
 		Log::printInfo("got msg");
 
@@ -192,7 +210,7 @@ public:
 		//Log::printInfo("answer: " + answer);
 		//Log::printInfo("messages:");
 		//printJSONArray(messages);
-		return answer;
+		return autoDeleteChara(answer);
 	}
 
 	void clear() {

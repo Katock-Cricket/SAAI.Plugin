@@ -17,4 +17,5 @@ std::map<std::string, std::string> Config::sys_prompt = {
 int Config::content_buffer_size = 3;
 int Config::audio_buffer_size = 5;
 int Config::messages_size = 5;
+int Config::speak_buffer_size = 5;
 std::string Config::testSubtitle = "";

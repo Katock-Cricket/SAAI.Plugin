@@ -14,9 +14,19 @@ private:
     static std::mutex subtitleMutex;
     static bool activate;
     static char content[512];
-    static int last;
+    static CPed* pedSpeaking;
 
-    static void autoDeactivate(std::string contentPre) {
+    static bool isSpeaking() {
+        if (pedSpeaking == nullptr || !IsPedPointerValid(pedSpeaking)) {
+            return false;
+        }
+        if (pedSpeaking->GetPedTalking()) {
+            return true;
+        }
+        return false;
+    }
+
+    static void autoDeactivate(std::string contentPre, int last) {
         std::this_thread::sleep_for(std::chrono::seconds(last));
         std::lock_guard<std::mutex> lock(subtitleMutex);
         if (std::string(content) == contentPre) {
@@ -62,43 +72,61 @@ private:
         }
     }
 
+    static void pedSpeakSubtitle() {
+        std::lock_guard<std::mutex> lock(subtitleMutex);
+        if (isSpeaking()) {
+            CFont::SetProportional(true);
+            CFont::SetBackground(false, false);
+            CFont::SetScale(2.0f, 2.0f);
+            CFont::SetOrientation(eFontAlignment::ALIGN_CENTER);
+            CFont::SetCentreSize(SCREEN_WIDTH);
+            CFont::SetColor({ 255, 255, 255 });
+            CFont::SetEdge(2);
+            CFont::SetFontStyle(eFontStyle::FONT_SUBTITLES);
+            CFont::PrintString(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 5 / 6, content);
+        }
+        else {
+            pedSpeaking = nullptr;
+        }
+    }
+
+    static void otherSubtitle() {
+        std::lock_guard<std::mutex> lock(subtitleMutex);
+        if (activate) {
+            CFont::SetProportional(true);
+            CFont::SetBackground(false, false);
+            CFont::SetScale(2.0f, 2.0f);
+            CFont::SetOrientation(eFontAlignment::ALIGN_CENTER);
+            CFont::SetCentreSize(SCREEN_WIDTH);
+            CFont::SetColor({ 255, 255, 255 });
+            CFont::SetEdge(2);
+            CFont::SetFontStyle(eFontStyle::FONT_SUBTITLES);
+            CFont::PrintString(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 5 / 6, content);
+        }
+    }
+
 public:
 
     Subtitle() { }
 
     void install() {
-        Events::drawingEvent += [] {
-            std::lock_guard<std::mutex> lock(subtitleMutex);
-            if (activate) {
-                CFont::SetProportional(true);
-                CFont::SetBackground(false, false);
-                CFont::SetScale(2.0f, 2.0f);
-                CFont::SetOrientation(eFontAlignment::ALIGN_CENTER);
-                CFont::SetCentreSize(SCREEN_WIDTH);
-                CFont::SetColor({ 255, 255, 255 });
-                CFont::SetEdge(2);
-                CFont::SetFontStyle(eFontStyle::FONT_SUBTITLES);
-                CFont::PrintString(SCREEN_WIDTH/2, SCREEN_HEIGHT*5/6, content);
-                std::thread t(&autoDeactivate, std::string(content));
-                t.detach();
-            }
-            };
+        Events::drawingEvent.Add(pedSpeakSubtitle);
+        Events::drawingEvent.Add(otherSubtitle);
     }
 
-    static void printSubtitle(const char* usr_content) {
-        std::lock_guard<std::mutex> lock(subtitleMutex);
-        std::strncpy(content, usr_content, sizeof(content) - 1);
-        content[sizeof(content) - 1] = '\0';
-        last = calcDuring(content);
-        activate = true;
-    }
-
-    static void printSubtitle(std::string usr_content) {
+    static void printSubtitle(std::string usr_content, CPed* ped = nullptr) {
         std::lock_guard<std::mutex> lock(subtitleMutex);
         std::strncpy(content, usr_content.c_str(), sizeof(content) - 1);
         content[sizeof(content) - 1] = '\0';
-        last = calcDuring(content);
-        activate = true;
+        if (ped == nullptr) {
+            int last = calcDuring(content);
+            std::thread t(&autoDeactivate, std::string(content), last);
+            t.detach();
+            activate = true;
+        }
+        else {
+            pedSpeaking = ped;
+        }
     }
 };
 

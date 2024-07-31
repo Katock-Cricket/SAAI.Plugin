@@ -31,6 +31,10 @@ private:
 	static std::vector<Record> history;
 
 	static bool checkValid(AIPed* aiPed) {
+		if (aiPed == nullptr) {
+			AIPedPool.erase(find(AIPedPool.begin(), AIPedPool.end(), aiPed));
+			return false;
+		}
 		if (aiPed->isValid()) {
 			return true;
 		}
@@ -38,6 +42,15 @@ private:
 		delete aiPed;
 		aiPed = nullptr;
 		return false;
+	}
+
+	static void cleanAIPedPool() {
+		// clean up the pool
+		for (AIPed* aiPed : AIPedPool) {
+			if (!checkValid(aiPed)) {
+				Log::printInfo("Deleted invalid AI");
+			}
+		}
 	}
 
 	static AIPed* chooseAIPedToSpeak() {
@@ -54,6 +67,7 @@ private:
 			lastAIPed = history.back().aiPed;
 		}
 		// choose a ped that is different from lastAIPed
+		cleanAIPedPool();
 		AIPed* aiPed;
 		std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
 		std::uniform_int_distribution<std::size_t> dist;
@@ -94,6 +108,7 @@ private:
 			return;
 		}
 		std::string context = aiBeh->getContext();
+		Log::printInfo("Start generating content for the beh");
 		std::string content = aiPed->answer(context); // time costing
 		aiBeh->setContent(content);
 		if (content == "Error") {
@@ -125,16 +140,19 @@ private:
 			return;
 		}
 
+		while (!Speak::canAddSpeak()) { //may cost time
+			Log::printInfo("waiting for speaker");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		}
 		std::unique_lock<std::mutex> lock(audioMutex);
 		audioBuf.pop();
 		delete aiBeh;
 		aiBeh = nullptr;
 		lock.unlock();
-
+	
 		Speak::addSpeak(ped, audioPath, content); // time costing
 		Log::printInfo("audio generation completed: " + content);
 	}
-
 
 	static void addContent() {
 		// add content
@@ -168,11 +186,18 @@ private:
 			return;
 		}
 		AIBeh* aiBeh = contentBuf.front();
+		if (aiBeh == nullptr) {
+			Log::printError("aiBeh in ContentBuf is null, when starting generating content");
+			contentBuf.pop();
+			return;
+		}
 		if (aiBeh->isWorking()) {
 			//Log::printInfo("The beh is generating content, only 1 beh can work");
 			return;
 		}
 		aiBeh->start();
+		Log::printInfo("Start processing a beh, context:");
+		Log::printInfo(aiBeh->getContext());
 		std::thread t(&AIMain::generateContent, aiBeh);
 		t.detach();
 	}
@@ -189,6 +214,11 @@ private:
 			return;
 		}
 		AIBeh* aiBeh = contentBuf.front();
+		if (aiBeh == nullptr) {
+			Log::printError("Beh in contentbuf is null, when adding audio");
+			contentBuf.pop();
+			return;
+		}
 		if (aiBeh->getContent() == "") {
 			//Log::printInfo("A beh is waiting for content, don't add for now");
 			return;
@@ -211,6 +241,11 @@ private:
 			return;
 		}
 		AIBeh* aiBeh = audioBuf.front();
+		if (aiBeh == nullptr) {
+			Log::printError("beh in audioBuf is null, when precessing audio");
+			audioBuf.pop();
+			return;
+		}
 		if (aiBeh->isWorking()) {
 			//Log::printInfo("The beh is generating audio, only 1 beh can work");
 			return;
@@ -220,8 +255,12 @@ private:
 		t.detach();
 	}
 
-	static void contentBufAdder() {
-
+	static void pipeline() {
+		cleanAIPedPool();
+		addContent();
+		processContent();
+		addAudio();
+		processAudio();
 	}
 
 public:
@@ -230,19 +269,7 @@ public:
 			AIPed* playerAIPed = new AIPed(FindPlayerPed(), "carl");
 			AIPedPool.push_back(playerAIPed);
 			};
-		Events::gameProcessEvent += [] {
-			// clean up the pool
-			for (AIPed* aiPed : AIPedPool) {
-				if (!checkValid(aiPed)) {
-					Log::printInfo("Deleted invalid AI");
-				}
-			}
-			};
-
-		Events::gameProcessEvent.Add(addContent);
-		Events::gameProcessEvent.Add(processContent);
-		Events::gameProcessEvent.Add(addAudio);
-		Events::gameProcessEvent.Add(processAudio);
+		Events::gameProcessEvent.Add(pipeline);
 	}
 
 	static void addAIPed(CPed* ped, std::string name) {

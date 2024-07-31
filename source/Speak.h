@@ -19,6 +19,7 @@ private:
 	static std::mutex speakMutex;
 	static std::map<std::string, int> pakSize;
 	static std::queue<SpeakTask> speakBuf;
+	static CPed* pedSpeaking;
 
 	static int getBankNumber(std::string pakName, unsigned bankNumber) {
 		std::map<std::string, int>::iterator it;
@@ -35,10 +36,6 @@ private:
 		return (trueBankNumber - 1) * 200 + 2000 + (wavNumber - 1);
 	}
 
-	static bool canSpeak() {
-		return !speakBuf.empty();
-	}
-
 	static SpeakTask getSpeakTask() {
 		SpeakTask ret = speakBuf.front();
 		speakBuf.pop();
@@ -46,7 +43,7 @@ private:
 	}
 
 	static bool pedSpeak(CPed* ped, std::string pakName, int bankNumber, int wavNumber) {
-		if (!ped->IsPointerValid()) {
+		if (ped == nullptr || !ped->IsPointerValid()) {
 			return false;
 		}
 		int trueBankNumber = getBankNumber(pakName, bankNumber);
@@ -55,20 +52,41 @@ private:
 		}
 		int soundID = calcSoundID(trueBankNumber, wavNumber);
 		ped->SayScript(soundID, 0, 0, 0);
+		pedSpeaking = ped;
+		Log::printInfo("Ped is going to say audio: pak:" + pakName + " bank:" + std::to_string(bankNumber) + " wav:" + std::to_string(wavNumber));
 		return true;
+	}
+
+	static bool canSpeak() {
+		// no ped is speaking and have speak task
+		if (pedSpeaking == nullptr || !IsPedPointerValid(pedSpeaking)) {
+			return !speakBuf.empty();
+		}
+		if (pedSpeaking->GetPedTalking()) {
+			return false;
+		}
+		return !speakBuf.empty();
+	}
+
+	static void processSpeak() {
+		std::lock_guard<std::mutex> lock(speakMutex);
+		if (canSpeak()) {
+			Log::printInfo("get speak task");
+			SpeakTask speakTask = getSpeakTask();
+			if (pedSpeak(speakTask.pedToSpeak, speakTask.audioToSpeak.pakName, speakTask.audioToSpeak.bankNumber, speakTask.audioToSpeak.wavNumber)) {
+				Subtitle::printSubtitle(speakTask.contentToSpeak, speakTask.pedToSpeak);
+			}
+		}
 	}
 
 public:
 	static void install() {
-		Events::gameProcessEvent += [] {
-			std::lock_guard<std::mutex> lock(speakMutex);
-			if (canSpeak()) {
-				SpeakTask speakTask = getSpeakTask();
-				if (pedSpeak(speakTask.pedToSpeak, speakTask.audioToSpeak.pakName, speakTask.audioToSpeak.bankNumber, speakTask.audioToSpeak.wavNumber)) {
-					Subtitle::printSubtitle(speakTask.contentToSpeak.c_str());
-				}
-			}
-			};
+		Events::gameProcessEvent.Add(processSpeak);
+	}
+
+	static bool canAddSpeak() {
+		std::lock_guard<std::mutex> lock(speakMutex);
+		return speakBuf.size() < Config::getSpeakbufferSize();
 	}
 
 	static void addSpeak(CPed* ped, AudioPath audioPath, std::string content) {
@@ -79,8 +97,13 @@ public:
 		std::this_thread::sleep_for(std::chrono::milliseconds(Config::getReinstTime()));
 		std::lock_guard<std::mutex> lock(speakMutex);
 		speakBuf.push(speakTask);
-		if (speakBuf.size() > 5) {
-			speakBuf.pop();
+	}
+
+	static void autoAddSpeak(CPed* ped, AudioPath audioPath, std::string content) {
+		while (!canAddSpeak()) {
+			//Log::printInfo("waiting for speaker");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
+		addSpeak(ped, audioPath, content);
 	}
 };
