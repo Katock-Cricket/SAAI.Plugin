@@ -1,19 +1,17 @@
-# SAAI.Plugin
-GTA San Andreas with AI，将大语言模型(GPT)、TTS、SOVITS整合进入圣安地列斯，使用真正的AI控制NPC的行为、语音。
-
-[TOC]
+# GTA San Andreas with AI
+GTA San Andreas with AI（SAAI），将大语言模型(GPT)、TTS、SOVITS整合进入圣安地列斯，使用真正的AI控制NPC的行为、语音。
 
 ## 软件架构
 
-集成开发环境：VS2022、Windows11
+开发环境：VS2022、Windows11
 
-前端(**Plugin**)：SAAI.Plugin ASI插件 
+[前端(**Plugin**)](https://github.com/Katock-Cricket/SAAI.Plugin)：[SAAI.Plugin] ASI插件 
 
-后端(**Server**)：EdgeTTS+SOVITS-SVC 
+[后端(**Server**)](https://github.com/Katock-Cricket/SAAI.Server)：[SAAI.Server] EdgeTTS+SOVITS-SVC 
 
 前后端通过socket实现IPC通信。
 
-## Plugin架构
+## [Plugin](https://github.com/Katock-Cricket/SAAI.Plugin)架构
 
 功能：连接ChatGPT、组织AI行为、向AI语音Server发出内容生成的请求、操作游戏功能
 
@@ -41,15 +39,13 @@ GTA San Andreas with AI，将大语言模型(GPT)、TTS、SOVITS整合进入圣�
 
 AI语音和连接GPT都会花时间，所以AI行为都是异步的，编写了AIBeh的三级请求队列，用流水线的方式生成连续对话内容。
 
-## Server架构
+## [Server](https://github.com/Katock-Cricket/SAAI.Server)架构
 
 功能：生成对应NPC音色的AI语音
 
-暂未建库
-
 ### AI语音
 
-目前的解决方案不是最终版，用的是EdgeTTS+[SOVITS](https://github.com/svc-develop-team/so-vits-svc)，后续可能改为[GPT-SOVITS](https://github.com/RVC-Boss/GPT-SoVITS)，降低推理时长，加强语气效果
+EdgeTTS+[SOVITS-SVC](https://github.com/svc-develop-team/so-vits-svc)
 
 轻度改写SOVITS以提供轻量快速的推理服务，整合了CPU版的Pytorch环境，无需手动配置。尽可能适应更多运行环境。
 
