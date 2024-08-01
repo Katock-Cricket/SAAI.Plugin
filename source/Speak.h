@@ -141,7 +141,7 @@ private:
 	}
 
 	static void autoForceStopTalk(CPed* ped) { //when a script is too long, npc won't stop talking, force to stop
-		std::this_thread::sleep_for(std::chrono::milliseconds(6000));
+		std::this_thread::sleep_for(std::chrono::milliseconds(Config::getSpeakTimeout()));
 		if (!IsPedPointerValid(ped) || pedSpeaking == nullptr) {
 			Log::printError("pedSpeaking secs ago is null");
 			return;

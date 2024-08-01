@@ -25,4 +25,5 @@ int Config::audio_buffer_size = 5;
 int Config::messages_size = 5;
 int Config::speak_buffer_size = 5;
 int Config::chat_round = 5;
+int Config::speak_timeout = 6000;
 std::string Config::testSubtitle = "";
