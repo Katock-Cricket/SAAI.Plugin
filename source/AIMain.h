@@ -45,7 +45,7 @@ private:
 public:
 	static void install() { // install when init
 		Events::initGameEvent += [] {
-			AIPed* playerAIPed = new AIPed(FindPlayerPed(), "CARL");
+			AIPed* playerAIPed = new AIPed(FindPlayerPed(), "Carl");
 			AIPedPool.push_back(playerAIPed);
 			};
 		ChatController::install();

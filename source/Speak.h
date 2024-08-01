@@ -21,7 +21,7 @@ private:
 	static CPed* pedSpeaking;
 	static std::mutex lockMutex;
 	static bool speakLock;
-
+	 
 	static int getBankNumber(std::string pakName, unsigned bankNumber) {
 		std::map<std::string, int>::iterator it;
 		int offset = 0;
@@ -52,8 +52,11 @@ private:
 			return false;
 		}
 		int soundID = calcSoundID(trueBankNumber, wavNumber);
+		ped->EnablePedSpeech();
 		ped->SayScript(soundID, 0, 0, 0);
 		pedSpeaking = ped;
+		std::thread t(&autoForceStopTalk, ped);
+		t.detach();
 		std::lock_guard<std::mutex> lock(lockMutex);
 		speakLock = true;
 		Log::printInfo("Ped is going to say audio: pak:" + pakName + " bank:" + std::to_string(bankNumber) + " wav:" + std::to_string(wavNumber));
@@ -123,18 +126,30 @@ private:
 			Log::printInfo("Maintain AI speak, when ped want to SayScript");
 			return;
 		}
-		Log::printInfo("Allow say script");
-		Log::printInfo("ped ptr: " + std::to_string(IsPedPointerValid(ped)));
-		Log::printInfo("arg0: " + std::to_string(arg0));
-		Log::printInfo("arg1: " + std::to_string(arg1));
-		Log::printInfo("arg2: " + std::to_string(arg2));
-		Log::printInfo("arg3: " + std::to_string(arg3));
+		//Log::printInfo("Allow say script");
+		//Log::printInfo("ped ptr: " + std::to_string(IsPedPointerValid(ped)));
+		//Log::printInfo("arg0: " + std::to_string(arg0));
+		//Log::printInfo("arg1: " + std::to_string(arg1));
+		//Log::printInfo("arg2: " + std::to_string(arg2));
+		//Log::printInfo("arg3: " + std::to_string(arg3));
 		if (!IsPedPointerValid(ped)) {
 			Log::printError("ped is null when say script");
 			return;
 		}
 		plugin::CallMethod<0x4E4F70, CAEPedSpeechAudioEntity*, int, int, unsigned char, unsigned char, unsigned char>
-			(&(ped->m_pedSpeech), 0x35, arg0, 1, 1, 1);
+			(&(ped->m_pedSpeech), 0x35, arg0, 100, 0, 0);
+	}
+
+	static void autoForceStopTalk(CPed* ped) { //when a script is too long, npc won't stop talking, force to stop
+		std::this_thread::sleep_for(std::chrono::milliseconds(6000));
+		if (!IsPedPointerValid(ped) || pedSpeaking == nullptr) {
+			Log::printError("pedSpeaking secs ago is null");
+			return;
+		}
+		if (ped == pedSpeaking && ped->GetPedTalking()) { // still this ped speaking
+			Log::printInfo("force mute pedSpeaking secs ago");
+			ped->DisablePedSpeechForScriptSpeech(1);
+		}
 	}
 
 public:

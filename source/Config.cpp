@@ -2,9 +2,9 @@
 
 std::string Config::cheat_free_chat;
 std::map<std::string, std::string> Config::cheat_npc = {
-	{"RYDER", "ryder"},
-	{"SWEET", "sweet"},
-	{"SMOKE", "smoke"}
+	{"Ryder", "ryder"},
+	{"Sweet", "sweet"},
+	{"Smoke", "smoke"}
 };
 std::string Config::url = "";
 std::string Config::api_key = "";

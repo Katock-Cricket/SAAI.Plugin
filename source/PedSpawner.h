@@ -61,10 +61,12 @@ private:
 	static void cheatSpawn() {
 		for (auto& t : Config::getCheatNPC()) {
 			std::string pedName = t.first;
+			std::string modelName(pedName.size(), ' ');
+			transform(pedName.begin(), pedName.end(), modelName.begin(), ::toupper);
 			std::string pedCheat = t.second;
-
+			
 			if (FindPlayerPed() && CheatActivate::cheat_pressed(pedCheat)) {
-				auto it = specialPedSlot.find(pedName);
+				auto it = specialPedSlot.find(modelName);
 				if (it == specialPedSlot.end()) {
 					Log::printError("slot not found for special ped error: " + pedName);
 					return;
@@ -73,7 +75,7 @@ private:
 					CHud::SetHelpMessage("don't spawn same ped twice", true, false, false);
 					return;
 				}
-				CPed* ped = createSpecialActor(it->second, pedName);
+				CPed* ped = createSpecialActor(it->second, modelName);
 				ped->SetPosn(FindPlayerPed()->TransformFromObjectSpace(CVector(-2.0f, 0.0f, 0.0f)));
 				ped->SetOrientation(0.0f, 0.0f, 0.0f);
 				CWorld::Add(ped);
@@ -87,7 +89,7 @@ private:
 				//ped->SetCurrentWeapon(WEAPON_AK47);
 				CStreaming::SetModelIsDeletable(MODEL_AK47);
 				addAIPed(ped, pedName);
-				CHud::SetHelpMessage("Spawned Ryder", true, false, false);
+				CHud::SetHelpMessage(std::string("Spawned " + pedName).c_str(), true, false, false);
 			}
 		}
 	}
