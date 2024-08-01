@@ -30,14 +30,13 @@ private:
 				AIPedPool.erase(find(AIPedPool.begin(), AIPedPool.end(), aiPed));
 				delete aiPed;
 				aiPed = nullptr;
-				Log::printInfo("Deleted invalid AI");
+				Log::printInfo("Deleted invalid AIPed");
 			}
 		}
 	}
 
 	static void pipeline() {
 		cleanAIPedPool();
-		//chatController.addContent();
 		contentProcessor.processContent();
 		audioProcessor.addAudio();
 		audioProcessor.processAudio();
@@ -46,7 +45,7 @@ private:
 public:
 	static void install() { // install when init
 		Events::initGameEvent += [] {
-			AIPed* playerAIPed = new AIPed(FindPlayerPed(), "carl");
+			AIPed* playerAIPed = new AIPed(FindPlayerPed(), "CARL");
 			AIPedPool.push_back(playerAIPed);
 			};
 		ChatController::install();

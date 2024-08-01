@@ -1,5 +1,11 @@
 #include "Config.h"
 
+std::string Config::cheat_free_chat;
+std::map<std::string, std::string> Config::cheat_npc = {
+	{"RYDER", "ryder"},
+	{"SWEET", "sweet"},
+	{"SMOKE", "smoke"}
+};
 std::string Config::url = "";
 std::string Config::api_key = "";
 std::string Config::model = "";
@@ -18,4 +24,5 @@ int Config::content_buffer_size = 3;
 int Config::audio_buffer_size = 5;
 int Config::messages_size = 5;
 int Config::speak_buffer_size = 5;
+int Config::chat_round = 5;
 std::string Config::testSubtitle = "";

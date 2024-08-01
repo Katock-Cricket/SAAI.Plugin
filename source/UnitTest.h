@@ -26,7 +26,7 @@ public:
 
 private:
 	static void addSpeak() {
-		AudioPath audioPath = { true, "SCRIPT", 22, 2 };
+		AudioPath audioPath = { true, "SCRIPT", 42, 2 };
 		while (!Speak::canAddSpeak()) { //may cost time
 			Log::printInfo("waiting for speaker");
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));

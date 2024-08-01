@@ -81,7 +81,7 @@ private:
             CFont::SetOrientation(eFontAlignment::ALIGN_CENTER);
             CFont::SetCentreSize(SCREEN_WIDTH);
             CFont::SetColor({ 255, 255, 255 });
-            CFont::SetEdge(2);
+            CFont::SetEdge(1);
             CFont::SetFontStyle(eFontStyle::FONT_SUBTITLES);
             CFont::PrintString(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 5 / 6, content);
         }
@@ -99,7 +99,7 @@ private:
             CFont::SetOrientation(eFontAlignment::ALIGN_CENTER);
             CFont::SetCentreSize(SCREEN_WIDTH);
             CFont::SetColor({ 255, 255, 255 });
-            CFont::SetEdge(2);
+            CFont::SetEdge(1);
             CFont::SetFontStyle(eFontStyle::FONT_SUBTITLES);
             CFont::PrintString(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 5 / 6, content);
         }

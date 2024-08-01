@@ -20,6 +20,7 @@ private:
 	}
 
 	static void uninstPipeline() {
+		Log::printInfo("uninst");
 		Subtitle::uninstall();
 		Speak::uninstall();
 		AIMain::uninstall();
@@ -38,5 +39,6 @@ public:
 		}
 		installPipeline();
 		Events::shutdownRwEvent.Add(uninstPipeline);
+		//Events::reInitGameEvent.Add(uninstPipeline);
 	} 
 } SAAI;

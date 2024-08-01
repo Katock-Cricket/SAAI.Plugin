@@ -9,7 +9,6 @@
 
 class ChatController : public CheatActivate{
 private:
-	static bool isChating;
 
 	static AIPed* chooseAIPedToSpeak() {
 		if (AIPedPool.size() < 2) {
@@ -36,10 +35,17 @@ private:
 		return aiPed;
 	}
 
-	static std::string generateContext() {
+	static std::string generateContext(AIPed* aiPedToSpeak) {
 		std::lock_guard<std::mutex> lock(historyMutex);
 		if (history.empty()) {
-			return Config::getMeetPrompt();
+			std::string nameBuffer = "";
+			for (auto& aiPed : AIPedPool) {
+				if (aiPed == aiPedToSpeak) {
+					continue;
+				}
+				nameBuffer += aiPed->getName() + ", ";
+			}
+			return Config::getMeetPrompt() + nameBuffer;
 		}
 		else {
 			return history.back().toString();
@@ -47,26 +53,26 @@ private:
 	}
 
 	static void activateChat() {
-		if (cheat_pressed("chat")) {
+		if (cheat_pressed(Config::getCheatFreeChat())) {
+			std::lock_guard<std::mutex> lock(chatMutex);
 			isChating = true;
 			CHud::SetHelpMessage("Free chat is luanching...", true, false, false);
 		}
 	}
 
 	static void autoDeactivateChat() {
-		if (history.size() > 6) {
+		if (history.size() >= Config::getChatRound()) {
+			std::lock_guard<std::mutex> lock(chatMutex);
 			isChating = false;
 			history.clear();
-			CHud::SetHelpMessage("Free chat is over", true, false, false);
+			//CHud::SetHelpMessage("Free chat is about to over", true, false, false);
 		}
 	}
 
 	static void pipeline() {
 		autoDeactivateChat();
 		activateChat();
-		if (isChating) {
-			addContent();
-		}
+		addContent();
 	}
 
 public:
@@ -75,6 +81,11 @@ public:
 	}
 
 	static void addContent() {
+		std::lock_guard<std::mutex> lock0(chatMutex);
+		if (!isChating) {
+			return;
+		}
+
 		// add content
 		std::lock_guard<std::mutex> lock(contentMutex);
 		if (contentBuf.size() > Config::getContentBufSize()) {
@@ -86,7 +97,7 @@ public:
 			//Log::printInfo("No ped to talk now, CJ is alone");
 			return;
 		}
-		std::string context = generateContext();
+		std::string context = generateContext(aiPedToSpeak);
 		if (!contentBuf.empty() && contentBuf.back()->getContext() == context) {
 			//Log::printInfo("duplicate context, can't add beh now");
 			return;

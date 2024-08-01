@@ -19,12 +19,18 @@ public:
 };
 
 static std::vector<AIPed*> AIPedPool; // use only in funcs-between-frames(sync), no need for mutex
+
+//bellow are shared resources
 static std::mutex contentMutex;
 static std::mutex audioMutex;
 static std::mutex historyMutex;
+static std::mutex chatMutex;
+
 static std::queue<AIBeh*> contentBuf;
 static std::queue<AIBeh*> audioBuf;
 static std::vector<Record> history;
+static bool isChating;
+
 
 static void addAIPed(CPed* ped, std::string name) {
 	AIPed* aiPed = new AIPed(ped, name);

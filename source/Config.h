@@ -7,6 +7,8 @@
 
 class Config {
 private:
+    static std::string cheat_free_chat;
+    static std::map<std::string, std::string> cheat_npc;
     static std::string url;
     static std::string api_key;
     static std::string model;
@@ -20,10 +22,19 @@ private:
     static int audio_buffer_size;
     static int messages_size;
     static int speak_buffer_size;
+    static int chat_round;
     static std::string testSubtitle;
 
 
 public:
+    static std::string getCheatFreeChat() {
+        return cheat_free_chat;
+    }
+
+    static std::map<std::string, std::string> getCheatNPC() {
+        return cheat_npc;
+    }
+
     static std::string getUrl() {
         return url;
     }
@@ -79,6 +90,10 @@ public:
         return speak_buffer_size;
     }
 
+    static unsigned int getChatRound() {
+        return chat_round;
+    }
+
     static std::string getTestSubtitle() {
         return testSubtitle;
     }
@@ -91,6 +106,10 @@ public:
         }
 
         try {
+            cheat_free_chat = reader.Get("CheatCode", "cheat_free_chat", "saai");
+            for (auto& t : cheat_npc) {
+                t.second = reader.Get("CheatCode", t.first, "");
+            }
             url = reader.Get("ChatGPT", "url", "");
             api_key = reader.Get("ChatGPT", "api_key", "");
             model = reader.Get("ChatGPT", "model", "");
@@ -117,11 +136,16 @@ public:
             audio_buffer_size = reader.GetInteger("Performance", "audio_buffer_size", 3);
             messages_size = reader.GetInteger("Performance", "messages_size", 5);
             speak_buffer_size = reader.GetInteger("Performance", "speak_buffer_size", 5);
+            chat_round = reader.GetInteger("Performance", "chat_round", 5);
             testSubtitle = reader.Get("CHS", "test_subtitle", "");
         }
         catch (std::exception& e) {
             Log::printError(e.what());
             return false;
+        }
+        Log::printInfo("CheatFreeChat: " + cheat_free_chat, "../SAAI.log");
+        for (auto& t : cheat_npc) {
+            Log::printInfo(t.first + " = " + t.second, "../SAAI.log");
         }
         Log::printInfo("Url: " + url, "../SAAI.log");
         Log::printInfo("APIKEY: " + api_key, "../SAAI.log");
@@ -132,12 +156,13 @@ public:
         Log::printInfo("global_prompt: " + global_prompt, "../SAAI.log");
         Log::printInfo("meet_prompt: " + meet_prompt, "../SAAI.log");
         for (auto& t : sys_prompt) {
-            Log::printInfo(t.first + " " + t.second, "../SAAI.log");
+            Log::printInfo(t.first + " = " + t.second, "../SAAI.log");
         }
         Log::printInfo("content_buffer_size: " + std::to_string(content_buffer_size), "../SAAI.log");
         Log::printInfo("audio_buffer_size: " + std::to_string(audio_buffer_size), "../SAAI.log");
         Log::printInfo("messages_size: " + std::to_string(messages_size), "../SAAI.log");
         Log::printInfo("speak_buffer_size: " + std::to_string(speak_buffer_size), "../SAAI.log");
+        Log::printInfo("chat_round: " + std::to_string(chat_round), "../SAAI.log");
         Log::printInfo("test_subtitle: " + testSubtitle, "../SAAI.log");
         return true;
     }

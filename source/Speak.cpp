@@ -11,3 +11,6 @@ std::map<std::string, int> Speak::pakSize = {
 std::queue<SpeakTask> Speak::speakBuf;
 std::mutex Speak::speakMutex;
 CPed* Speak::pedSpeaking = nullptr;
+bool Speak::speakLock = false;
+std::mutex Speak::lockMutex;
+

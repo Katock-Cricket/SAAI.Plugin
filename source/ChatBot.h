@@ -183,9 +183,9 @@ public:
 			messages.push_back(item1);
 		}
 		messages.push_back(item);
-		Log::printInfo("msg generated, push msg");
+		//Log::printInfo("msg generated, push msg");
 		JSON res = send();
-		Log::printInfo("got msg");
+		//Log::printInfo("got msg");
 
 		std::string answer;
 		if (!res.isEmpty())

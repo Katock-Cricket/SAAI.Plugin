@@ -33,8 +33,11 @@ private:
 			CHud::SetHelpMessage("ChatGPT/HTTP/JSON Error", true, false, false);
 			return;
 		}
-		std::lock_guard<std::mutex> lock(historyMutex);
-		history.push_back(Record(aiPed, aiPed->getName(), content));
+		std::lock_guard<std::mutex> lock0(chatMutex);
+		if (isChating) {
+			std::lock_guard<std::mutex> lock(historyMutex);
+			history.push_back(Record(aiPed, aiPed->getName(), content));
+		}
 		printHistory();
 	}
 
