@@ -15,13 +15,15 @@ typedef struct {
 
 class Speak {
 private:
-	static std::mutex speakMutex;
+	static std::mutex bufMutex;
 	static std::map<std::string, int> pakSize;
 	static std::queue<SpeakTask> speakBuf;
+	static std::mutex pedMutex;
 	static CPed* pedSpeaking;
 	static std::mutex lockMutex;
 	static bool speakLock;
-	 
+	static unsigned int timer;
+	
 	static int getBankNumber(std::string pakName, unsigned bankNumber) {
 		std::map<std::string, int>::iterator it;
 		int offset = 0;
@@ -33,7 +35,7 @@ private:
 		return 0;
 	}
 
-	static int calcSoundID(int trueBankNumber, int wavNumber) {
+	static int calcSoundID(int trueBankNumber, int wavNumber) { // algorithm site from gtaforums
 		return (trueBankNumber - 1) * 200 + 2000 + (wavNumber - 1);
 	}
 
@@ -43,8 +45,22 @@ private:
 		return ret;
 	}
 
+	static void forceMuteWhenTimeout() {
+		std::unique_lock<std::mutex> lock2(pedMutex);
+		if (pedSpeaking == nullptr || !IsPedPointerValid(pedSpeaking)) {
+			return;
+		}
+		unsigned int timeCost = CTimer::m_snTimeInMilliseconds - timer;
+		//Log::printInfo("timer: " + std::to_string(timeCost));
+		if (pedSpeaking->GetPedTalking() && timeCost >= Config::getSpeakTimeout()) { // still this ped speaking
+			Log::printInfo("force mute pedSpeaking secs ago");
+			pedSpeaking->DisablePedSpeechForScriptSpeech(1);
+			return;
+		}
+	}
+
 	static bool pedSpeak(CPed* ped, std::string pakName, int bankNumber, int wavNumber) {
-		if (ped == nullptr || !ped->IsPointerValid()) {
+		if (ped == nullptr || !IsPedPointerValid(ped)) {
 			return false;
 		}
 		int trueBankNumber = getBankNumber(pakName, bankNumber);
@@ -54,16 +70,17 @@ private:
 		int soundID = calcSoundID(trueBankNumber, wavNumber);
 		ped->EnablePedSpeech();
 		ped->SayScript(soundID, 0, 0, 0);
+		std::lock_guard<std::mutex> lock0(pedMutex);
 		pedSpeaking = ped;
-		std::thread t(&autoForceStopTalk, ped);
-		t.detach();
-		std::lock_guard<std::mutex> lock(lockMutex);
+		std::lock_guard<std::mutex> lock1(lockMutex);
 		speakLock = true;
+		timer = CTimer::m_snTimeInMilliseconds;
 		Log::printInfo("Ped is going to say audio: pak:" + pakName + " bank:" + std::to_string(bankNumber) + " wav:" + std::to_string(wavNumber));
 		return true;
 	}
 
 	static bool canSpeak() {
+		std::lock_guard<std::mutex> lock0(pedMutex);
 		// no ped is speaking and have speak task
 		if (pedSpeaking == nullptr || !IsPedPointerValid(pedSpeaking)) {
 			std::lock_guard<std::mutex> lock(lockMutex);
@@ -79,7 +96,7 @@ private:
 	}
 
 	static void processSpeak() {
-		std::lock_guard<std::mutex> lock(speakMutex);
+		std::lock_guard<std::mutex> lock(bufMutex);
 		if (canSpeak()) {
 			//Log::printInfo("get speak task");
 			SpeakTask speakTask = getSpeakTask();
@@ -90,6 +107,7 @@ private:
 	}
 
 	static bool isOccupied(CPed* ped) {
+		std::lock_guard<std::mutex> lock0(pedMutex);
 		if (pedSpeaking == nullptr || !IsPedPointerValid(pedSpeaking)) {
 			return false;
 		}
@@ -140,35 +158,25 @@ private:
 			(&(ped->m_pedSpeech), 0x35, arg0, 100, 0, 0);
 	}
 
-	static void autoForceStopTalk(CPed* ped) { //when a script is too long, npc won't stop talking, force to stop
-		std::this_thread::sleep_for(std::chrono::milliseconds(Config::getSpeakTimeout()));
-		if (!IsPedPointerValid(ped) || pedSpeaking == nullptr) {
-			Log::printError("pedSpeaking secs ago is null");
-			return;
-		}
-		if (ped == pedSpeaking && ped->GetPedTalking()) { // still this ped speaking
-			Log::printInfo("force mute pedSpeaking secs ago");
-			ped->DisablePedSpeechForScriptSpeech(1);
-		}
-	}
-
 public:
 	static void install() { // install when init
 		Events::gameProcessEvent.Add(processSpeak);
-		injector::MakeJMP(0x5EFFE0, lockPriorityWhenSay);
-		injector::MakeJMP(0x5EFFB0, lockPriorityWhenSayScript);
+		Events::gameProcessEvent.Add(forceMuteWhenTimeout);
+		injector::MakeJMP(0x5EFFE0, lockPriorityWhenSay); //didn't solve mute/crash bug, but may help
+		injector::MakeJMP(0x5EFFB0, lockPriorityWhenSayScript); //didn't solve mute/crash bug, but may help
 	}
 
 	static void uninstall() { // uninstall when shutdown
-		std::lock_guard<std::mutex> lock0(speakMutex);
+		std::lock_guard<std::mutex> lock0(bufMutex);
 		std::queue<SpeakTask>().swap(speakBuf);
+		std::lock_guard<std::mutex> lock1(pedMutex);
 		pedSpeaking = nullptr;
-		std::lock_guard<std::mutex> lock1(lockMutex);
+		std::lock_guard<std::mutex> lock2(lockMutex);
 		speakLock = false;
 	}
 
 	static bool canAddSpeak() {
-		std::lock_guard<std::mutex> lock(speakMutex);
+		std::lock_guard<std::mutex> lock(bufMutex);
 		return speakBuf.size() < Config::getSpeakbufferSize();
 	}
 
@@ -178,7 +186,7 @@ public:
 		speakTask.audioToSpeak = audioPath;
 		speakTask.contentToSpeak = content;
 		std::this_thread::sleep_for(std::chrono::milliseconds(Config::getReinstTime()));
-		std::lock_guard<std::mutex> lock(speakMutex);
+		std::lock_guard<std::mutex> lock(bufMutex);
 		speakBuf.push(speakTask);
 	}
 

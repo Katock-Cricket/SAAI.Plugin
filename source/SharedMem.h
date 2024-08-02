@@ -36,3 +36,33 @@ static void addAIPed(CPed* ped, std::string name) {
 	AIPed* aiPed = new AIPed(ped, name);
 	AIPedPool.push_back(aiPed);
 }
+
+static bool noValidRecord() { // need mutex
+	if (history.empty()) {
+		return true;
+	}
+	for (auto it = history.begin(); it != history.end(); ++it) {
+		if (!it->content.empty()) {
+			return false;
+		}
+	}
+	return true;
+}
+
+static Record* lastRecord() { // need mutex
+	for (auto it = history.rbegin(); it != history.rend(); ++it) {
+		if (!it->content.empty()) {
+			return &(*it);
+		}
+	}
+	return nullptr;
+}
+
+static Record* nextEmptyRecord() { // need mutex
+	for (auto it = history.begin(); it != history.end(); ++it) {
+		if (it->content.empty()) {
+			return &(*(it));
+		}
+	}
+	return nullptr;
+}

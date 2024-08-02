@@ -36,9 +36,14 @@ private:
 		std::lock_guard<std::mutex> lock0(chatMutex);
 		if (isChating) {
 			std::lock_guard<std::mutex> lock(historyMutex);
-			history.push_back(Record(aiPed, aiPed->getName(), content));
+			Record* nextEmptyRec = nextEmptyRecord();
+			if (nextEmptyRec == nullptr) {
+				Log::printError("all recs are full");
+				return;
+			}
+			nextEmptyRec->content = content;
+			printHistory();
 		}
-		printHistory();
 	}
 
 public:

@@ -36,7 +36,7 @@ private:
 		lock.unlock();
 
 		Speak::addSpeak(ped, audioPath, content); // time costing
-		Log::printInfo("audio generation completed: " + content);
+		//Log::printInfo("audio generation completed: " + content);
 	}
 
 public:
