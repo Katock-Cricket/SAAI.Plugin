@@ -7,6 +7,7 @@
 class AudioProcessor {
 private:
 	static void generateAudio(AIBeh* aiBeh) {
+		Log::printInfo("in generate audio");
 		AIPed* aiPed = aiBeh->getAIPed();
 		if (aiPed == nullptr || !aiPed->isValid()) {
 			std::lock_guard<std::mutex> lock(audioMutex);
@@ -19,22 +20,24 @@ private:
 		std::string name = aiPed->getName();
 		std::string content = aiBeh->getContent();
 
+		Log::printInfo("start request audio");
 		SVCClient client;
 		AudioPath audioPath = client.request_audio(content, name); // time costing
 		if (!audioPath.valid) {
 			return;
 		}
-
+		Log::printInfo("start add speak");
 		while (!Speak::canAddSpeak()) { //may cost time
 			Log::printInfo("waiting for speaker");
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
+		Log::printInfo("del aibeh");
 		std::unique_lock<std::mutex> lock(audioMutex);
 		audioBuf.pop();
 		delete aiBeh;
 		aiBeh = nullptr;
 		lock.unlock();
-
+		Log::printInfo("add speak");
 		Speak::addSpeak(ped, audioPath, content); // time costing
 		//Log::printInfo("audio generation completed: " + content);
 	}

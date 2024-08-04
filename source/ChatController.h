@@ -85,9 +85,13 @@ private:
 	}
 
 	static void pipeline() {
+		//Log::printInfo("---------------ChatController Pipeline-----------------");
 		autoDeactivateChat();
+		//Log::printInfo("autoDeactivateChat");
 		activateChat();
+		//Log::printInfo("activateChat");
 		addContent();
+		//Log::printInfo("addContent");
 	}
 
 public:

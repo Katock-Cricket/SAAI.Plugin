@@ -31,28 +31,24 @@ private:
 		CPed* ped = new CCivilianPed(CPopulation::IsFemale(modelID) ? PED_TYPE_CIVFEMALE : PED_TYPE_CIVMALE, modelID);
 		return ped;
 	}
+
 	static CPed* createSpecialActor(int slot, std::string name) {
-		Command<Commands::LOAD_SPECIAL_CHARACTER>(slot, name.c_str());
-		Log::printInfo("load special character in slot");
-		while (true) {
-			try {
-				CStreaming::RequestSpecialModel(slot, name.c_str(), 0);
-				break;
-			}
-			catch (const std::runtime_error e) {
-				Log::printError("load special model in slot failed");
-				continue;
-			}
-		}
-		CStreaming::LoadAllRequestedModels(false);
+		//Command<Commands::LOAD_SPECIAL_CHARACTER>(slot, name.c_str());
+		//CStreaming::RequestSpecialChar(slot, name.c_str(), PRIORITY_REQUEST);
+		CStreaming::RequestSpecialModel(slot, name.c_str(), PRIORITY_REQUEST);
+		Log::printInfo("request");
+		CStreaming::LoadAllRequestedModels(true);
+		Log::printInfo("load");
 		CPed* ped = new CCivilianPed(PED_TYPE_GANG2, slot);
-		return ped;
+		Log::printInfo("new");
+		CStreaming::SetSpecialCharIsDeletable(slot);
+		return ped; 
 	}
 
 	static bool alreadySpawned(std::string pedName) {
 		for (auto& aiPed : AIPedPool) {
 			if (aiPed->getName() == pedName) {
-				return true;
+				return true; 
 			}
 		}
 		return false;

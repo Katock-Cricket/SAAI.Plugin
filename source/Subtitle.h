@@ -105,6 +105,15 @@ private:
 		}
 	}
 
+	static void pipeline() {
+		//Log::printInfo("---------------Speak Pipeline-----------------");
+		pedSpeakSubtitle();
+		//Log::printInfo("pedSpeakSubtitle");
+		otherSubtitle();
+		//Log::printInfo("otherSubtitle");
+
+	}
+
 public:
 
 	Subtitle() { }

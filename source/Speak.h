@@ -158,6 +158,15 @@ private:
 			(&(ped->m_pedSpeech), 0x35, arg0, 100, 0, 0);
 	}
 
+	static void pipeline() {
+		//Log::printInfo("---------------Speak Pipeline-----------------");
+		processSpeak();
+		//Log::printInfo("processSpeak");
+		forceMuteWhenTimeout();
+		//Log::printInfo("forceMuteWhenTimeout");
+
+	}
+
 public:
 	static void install() { // install when init
 		Events::gameProcessEvent.Add(processSpeak);

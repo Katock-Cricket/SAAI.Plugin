@@ -9,10 +9,6 @@
 
 class AIMain {
 private:
-	static ChatController chatController;
-	static ContentProcessor contentProcessor;
-	static AudioProcessor audioProcessor;
-
 	static bool checkValid(AIPed* aiPed) {
 		if (aiPed == nullptr) {
 			return false;
@@ -36,10 +32,15 @@ private:
 	}
 
 	static void pipeline() {
+		//Log::printInfo("---------------AIMain Pipeline-----------------");
 		cleanAIPedPool();
-		contentProcessor.processContent();
-		audioProcessor.addAudio();
-		audioProcessor.processAudio();
+		//Log::printInfo("cleanAIPedPool");
+		ContentProcessor::processContent();
+		//Log::printInfo("processContent");
+		AudioProcessor::addAudio();
+		//Log::printInfo("addAudio");
+		AudioProcessor::processAudio();
+		//Log::printInfo("processAudio");
 	}
 
 public:
@@ -48,7 +49,6 @@ public:
 			AIPed* playerAIPed = new AIPed(FindPlayerPed(), "Carl");
 			AIPedPool.push_back(playerAIPed);
 			};
-		ChatController::install();
 
 		Events::gameProcessEvent.Add(pipeline);
 	}

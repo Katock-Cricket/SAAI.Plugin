@@ -16,6 +16,7 @@ private:
 		Subtitle::install();
 		Speak::install();
 		UnitTest::install();
+		ChatController::install();
 		AIMain::install();
 	}
 
