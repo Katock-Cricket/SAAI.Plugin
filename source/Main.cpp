@@ -39,6 +39,5 @@ public:
 		}
 		installPipeline();
 		Events::shutdownRwEvent.Add(uninstPipeline);
-		//Events::reInitGameEvent.Add(uninstPipeline);
 	} 
 } SAAI;

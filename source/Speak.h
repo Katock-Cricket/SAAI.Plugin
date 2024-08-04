@@ -57,7 +57,7 @@ private:
 			pedSpeaking->DisablePedSpeechForScriptSpeech(1);
 			return;
 		}
-	}
+	} 
 
 	static bool pedSpeak(CPed* ped, std::string pakName, int bankNumber, int wavNumber) {
 		if (ped == nullptr || !IsPedPointerValid(ped)) {
