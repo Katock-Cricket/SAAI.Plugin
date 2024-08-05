@@ -23,7 +23,7 @@ private:
 	static std::mutex lockMutex;
 	static bool speakLock;
 	static unsigned int timer;
-	
+
 	static int getBankNumber(std::string pakName, unsigned bankNumber) {
 		std::map<std::string, int>::iterator it;
 		int offset = 0;
@@ -57,7 +57,7 @@ private:
 			pedSpeaking->DisablePedSpeechForScriptSpeech(1);
 			return;
 		}
-	} 
+	}
 
 	static bool pedSpeak(CPed* ped, std::string pakName, int bankNumber, int wavNumber) {
 		if (ped == nullptr || !IsPedPointerValid(ped)) {
@@ -164,7 +164,6 @@ private:
 		//Log::printInfo("processSpeak");
 		forceMuteWhenTimeout();
 		//Log::printInfo("forceMuteWhenTimeout");
-
 	}
 
 public:

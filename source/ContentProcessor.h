@@ -4,7 +4,6 @@
 #include "Config.h"
 #include "SharedMem.h"
 
-
 class ContentProcessor {
 private:
 	static void printHistory() {

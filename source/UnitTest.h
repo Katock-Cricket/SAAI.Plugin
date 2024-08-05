@@ -14,7 +14,6 @@
 #include "Config.h"
 #include "ThreadPool.h"
 
-
 class UnitTest : public CheatActivate, public KeyActivate {
 public:
 	UnitTest() {}
@@ -43,7 +42,7 @@ private:
 	static void testNRG() {
 		if (FindPlayerPed() && key_pressed(VK_F10)) {
 			CVector spawnPos = FindPlayerPed()->TransformFromObjectSpace(CVector(0.0f, 3.0f, -0.5f));
-			CVector spawnOri = CVector(); 
+			CVector spawnOri = CVector();
 			FindPlayerPed()->GetOrientation(spawnOri.x, spawnOri.y, spawnOri.z);
 
 			int modelIndex = 522;
@@ -60,5 +59,4 @@ private:
 			}
 		}
 	}
-
 };

@@ -1,4 +1,4 @@
-#include <cstdlib> 
+#include <cstdlib>
 #include <thread>
 
 #include "PedSpawner.h"
@@ -22,13 +22,13 @@ HANDLE StartProcess(const char* commandLine) {
 	ZeroMemory(&pi, sizeof(pi));
 
 	if (!CreateProcess(NULL,
-		(LPSTR)commandLine, 
-		NULL, 
-		NULL, 
-		FALSE, 
-		0,    
+		(LPSTR)commandLine,
 		NULL,
-		NULL, 
+		NULL,
+		FALSE,
+		0,
+		NULL,
+		NULL,
 		&si,
 		&pi)
 		) {
@@ -81,5 +81,5 @@ public:
 		}
 
 		Events::shutdownRwEvent.Add(uninstPipeline);
-	} 
+	}
 } SAAI;

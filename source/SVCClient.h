@@ -38,7 +38,7 @@ private:
 		return audioPath;
 	}
 
-	static bool init_client(SOCKET &sock) {
+	static bool init_client(SOCKET& sock) {
 		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
 			Log::printError("Socket creation error!!!!!!!!!!!!");
 			return false;
@@ -91,7 +91,7 @@ public:
 			return audioPath;
 		}
 
-		std::string message = content + ";" + speaker + ";" + (Config::getCN()?"cn":"en");
+		std::string message = content + ";" + speaker + ";" + (Config::getCN() ? "cn" : "en");
 		send(sock, message.c_str(), message.length(), 0);
 
 		char buffer[1024] = { 0 };

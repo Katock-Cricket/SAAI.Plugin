@@ -8,7 +8,7 @@
 #include "SharedMem.h"
 #include "ThreadPool.h"
 
-class ChatController : public CheatActivate{
+class ChatController : public CheatActivate {
 private:
 
 	static AIPed* chooseAIPedToSpeak() {

@@ -63,7 +63,4 @@ public:
 		std::lock_guard<std::mutex> lock3(historyMutex);
 		history.clear();
 	}
-
-
-	
 };

@@ -112,7 +112,6 @@ private:
 		//Log::printInfo("pedSpeakSubtitle");
 		otherSubtitle();
 		//Log::printInfo("otherSubtitle");
-
 	}
 
 public:

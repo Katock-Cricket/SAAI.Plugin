@@ -20,7 +20,7 @@
 #include "Speak.h"
 #include "AIMain.h"
 
-class PedSpawner : public KeyActivate, public CheatActivate{
+class PedSpawner : public KeyActivate, public CheatActivate {
 private:
 	const static int pedModelIds[];
 	const static std::map<std::string, int> specialPedSlot;
@@ -39,13 +39,13 @@ private:
 		CStreaming::LoadAllRequestedModels(true);
 		CPed* ped = new CCivilianPed(PED_TYPE_GANG2, slot);
 		CStreaming::SetSpecialCharIsDeletable(slot);
-		return ped; 
+		return ped;
 	}
 
 	static bool alreadySpawned(std::string pedName) {
 		for (auto& aiPed : AIPedPool) {
 			if (aiPed->getName() == pedName) {
-				return true; 
+				return true;
 			}
 		}
 		return false;
@@ -57,7 +57,7 @@ private:
 			std::string modelName(pedName.size(), ' ');
 			transform(pedName.begin(), pedName.end(), modelName.begin(), ::toupper);
 			std::string pedCheat = t.second;
-			
+
 			if (FindPlayerPed() && CheatActivate::cheat_pressed(pedCheat)) {
 				auto it = specialPedSlot.find(modelName);
 				if (it == specialPedSlot.end()) {
@@ -87,9 +87,9 @@ private:
 		}
 	}
 
-public: 
+public:
 	PedSpawner() {}
-	static void install() {         
+	static void install() {
 		Events::gameProcessEvent.Add(cheatSpawn);
 	}
 };
