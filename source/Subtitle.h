@@ -6,6 +6,7 @@
 #include "plugin.h"
 #include "CFont.h"
 #include "Config.h"
+#include "ThreadPool.h"
 
 using namespace plugin;
 
@@ -135,8 +136,7 @@ public:
 		content[sizeof(content) - 1] = '\0';
 		if (ped == nullptr) {
 			int last = calcDuring(content);
-			std::thread t(&autoDeactivate, std::string(content), last);
-			t.detach();
+			ThreadPool::start(&autoDeactivate, std::string(content), last);
 			activate = true;
 		}
 		else {

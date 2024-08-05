@@ -3,6 +3,7 @@
 #include "AIBeh.h"
 #include "Config.h"
 #include "SharedMem.h"
+#include "ThreadPool.h"
 
 class AudioProcessor {
 private:
@@ -19,27 +20,21 @@ private:
 		CPed* ped = aiPed->getPed();
 		std::string name = aiPed->getName();
 		std::string content = aiBeh->getContent();
-
-		Log::printInfo("start request audio");
-		SVCClient client;
-		AudioPath audioPath = client.request_audio(content, name); // time costing
+		AudioPath audioPath = SVCClient::request_audio(content, name); // time costing
 		if (!audioPath.valid) {
+			Log::printError("invalid audioPath");
 			return;
 		}
-		Log::printInfo("start add speak");
 		while (!Speak::canAddSpeak()) { //may cost time
 			Log::printInfo("waiting for speaker");
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
-		Log::printInfo("del aibeh");
 		std::unique_lock<std::mutex> lock(audioMutex);
 		audioBuf.pop();
 		delete aiBeh;
 		aiBeh = nullptr;
 		lock.unlock();
-		Log::printInfo("add speak");
 		Speak::addSpeak(ped, audioPath, content); // time costing
-		//Log::printInfo("audio generation completed: " + content);
 	}
 
 public:
@@ -92,7 +87,6 @@ public:
 			return;
 		}
 		aiBeh->start();
-		std::thread t(&generateAudio, aiBeh);
-		t.detach();
+		ThreadPool::start(&generateAudio, aiBeh);
 	}
 };

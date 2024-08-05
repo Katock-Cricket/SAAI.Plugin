@@ -26,4 +26,5 @@ int Config::messages_size = 5;
 int Config::speak_buffer_size = 5;
 int Config::chat_round = 5;
 int Config::speak_timeout = 6000;
-std::string Config::testSubtitle = "";
+int Config::log_level = 0;
+int Config::num_workers = 10;

@@ -24,7 +24,8 @@ private:
     static int speak_buffer_size;
     static int chat_round;
     static int speak_timeout;
-    static std::string testSubtitle;
+    static int log_level;
+    static int num_workers;
 
 
 public:
@@ -99,11 +100,15 @@ public:
         return speak_timeout;
     }
 
-    static std::string getTestSubtitle() {
-        return testSubtitle;
+    static int getLogLevel() {
+        return log_level;
     }
 
-    static bool loadFromINI(const char* INIPath) {
+    static unsigned int getNumWorkers() {
+        return num_workers;
+    }
+
+    static bool install(const char* INIPath) {
         INIReader reader(INIPath);
 
         if (!reader.isParseSuccess()) {
@@ -143,7 +148,9 @@ public:
             speak_buffer_size = reader.GetInteger("Performance", "speak_buffer_size", 5);
             chat_round = reader.GetInteger("Performance", "chat_round", 5);
             speak_timeout = reader.GetInteger("Performance", "speak_timeout", 6000);
-            testSubtitle = reader.Get("CHS", "test_subtitle", "");
+            log_level = reader.GetInteger("Performance", "log_level", 0);
+            num_workers = reader.GetInteger("Performance", "num_workers", 10);
+
         }
         catch (std::exception& e) {
             Log::printError(e.what());
@@ -170,7 +177,9 @@ public:
         Log::printInfo("speak_buffer_size: " + std::to_string(speak_buffer_size), "../SAAI.log");
         Log::printInfo("chat_round: " + std::to_string(chat_round), "../SAAI.log");
         Log::printInfo("speak_timeout: " + std::to_string(speak_timeout), "../SAAI.log");
-        Log::printInfo("test_subtitle: " + testSubtitle, "../SAAI.log");
+        Log::printInfo("speak_timeout: " + std::to_string(log_level), "../SAAI.log");
+        Log::printInfo("num_workers: " + std::to_string(num_workers), "../SAAI.log");
+        Log::setLevel(log_level);
         return true;
     }
 };

@@ -36,11 +36,8 @@ private:
 		//Command<Commands::LOAD_SPECIAL_CHARACTER>(slot, name.c_str());
 		//CStreaming::RequestSpecialChar(slot, name.c_str(), PRIORITY_REQUEST);
 		CStreaming::RequestSpecialModel(slot, name.c_str(), PRIORITY_REQUEST);
-		Log::printInfo("request");
 		CStreaming::LoadAllRequestedModels(true);
-		Log::printInfo("load");
 		CPed* ped = new CCivilianPed(PED_TYPE_GANG2, slot);
-		Log::printInfo("new");
 		CStreaming::SetSpecialCharIsDeletable(slot);
 		return ped; 
 	}
@@ -89,6 +86,7 @@ private:
 			}
 		}
 	}
+
 public: 
 	PedSpawner() {}
 	static void install() {         

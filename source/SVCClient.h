@@ -14,10 +14,9 @@ class SVCClient {
 private:
 	static WSADATA wsaData;
 	static std::mutex wsaMutex;
-	SOCKET sock;
 	static struct sockaddr_in serv_addr;
 
-	AudioPath decodeAudioPath(const std::string& input) {
+	static AudioPath decodeAudioPath(const std::string& input) {
 		AudioPath audioPath = { false, "", 0, 0 };
 		std::vector<std::string> parts;
 		std::istringstream iss(input);
@@ -39,28 +38,7 @@ private:
 		return audioPath;
 	}
 
-public:
-	SVCClient() {
-	}
-
-	static bool init_socket() {
-		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-			Log::printError("WSAStartup failed!!!!!!!!!!!!");
-			return false;
-		}
-
-		serv_addr.sin_family = AF_INET;
-		serv_addr.sin_port = htons(65432);
-		inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr.s_addr);
-
-		return true;
-	}
-
-	static bool close_socket() {
-		WSACleanup();
-	}
-
-	bool init_client() {
+	static bool init_client(SOCKET &sock) {
 		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
 			Log::printError("Socket creation error!!!!!!!!!!!!");
 			return false;
@@ -81,9 +59,35 @@ public:
 		return true;
 	}
 
-	AudioPath request_audio(std::string content, std::string speaker) {
+public:
+	static bool install() {
+		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+			Log::printError("WSAStartup failed!!!!!!!!!!!!");
+			return false;
+		}
+
+		serv_addr.sin_family = AF_INET;
+		serv_addr.sin_port = htons(65432);
+		inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr.s_addr);
+
+		return true;
+	}
+
+	static void uninstall() {
+		//SOCKET sock{};
+		//if (!init_client(sock)) {
+		//	return;
+		//}
+		//std::string message = "end;end;end";
+		//send(sock, message.c_str(), message.length(), 0);
+		//closesocket(sock);
+		WSACleanup();
+	}
+
+	static AudioPath request_audio(std::string content, std::string speaker) {
+		SOCKET sock{};
 		AudioPath audioPath = { false, "", 0, 0 };
-		if (!init_client()) {
+		if (!init_client(sock)) {
 			return audioPath;
 		}
 

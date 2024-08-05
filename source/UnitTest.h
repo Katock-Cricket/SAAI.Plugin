@@ -12,6 +12,7 @@
 #include "Subtitle.h"
 #include "Speak.h"
 #include "Config.h"
+#include "ThreadPool.h"
 
 
 class UnitTest : public CheatActivate, public KeyActivate {
@@ -19,7 +20,6 @@ public:
 	UnitTest() {}
 
 	static void install() {
-		Events::gameProcessEvent.Add(testCHS);
 		Events::gameProcessEvent.Add(testNRG);
 		Events::gameProcessEvent.Add(testSpeak);
 	}
@@ -36,16 +36,7 @@ private:
 
 	static void testSpeak() {
 		if (cheat_pressed("speak")) {
-			std::thread t(&addSpeak);
-			t.detach();
-		}
-	}
-
-	static void testCHS() {
-		if (cheat_pressed("CHS")) {
-			std::string text = Config::getTestSubtitle();
-			Log::printInfo("call 4, trigger RenderFontBuffer");
-			Subtitle::printSubtitle(text);
+			ThreadPool::start(&addSpeak);
 		}
 	}
 

@@ -4,6 +4,7 @@
 #include "Config.h"
 #include "SharedMem.h"
 
+
 class ContentProcessor {
 private:
 	static void printHistory() {
@@ -67,7 +68,6 @@ public:
 		aiBeh->start();
 		Log::printInfo("Start processing a beh, context:");
 		Log::printInfo(aiBeh->getContext());
-		std::thread t(&generateContent, aiBeh);
-		t.detach();
+		ThreadPool::start(&generateContent, aiBeh);
 	}
 };

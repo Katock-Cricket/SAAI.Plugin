@@ -6,6 +6,7 @@
 #include "AIBeh.h"
 #include "Config.h"
 #include "SharedMem.h"
+#include "ThreadPool.h"
 
 class ChatController : public CheatActivate{
 private:
