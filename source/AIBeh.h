@@ -31,7 +31,7 @@ public:
 
 	void setContext(std::string context) {
 		this->context = context;
-	}	
+	}
 
 	std::string getContent() {
 		return content;

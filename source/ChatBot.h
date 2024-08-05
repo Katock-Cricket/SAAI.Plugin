@@ -39,7 +39,7 @@ private:
 
 		return realsize;
 	}
-	
+
 	void printJSONArray(std::vector<JSON> array) {
 		Log::printInfo("[");
 		for (JSON item : array) {
@@ -95,7 +95,7 @@ private:
 		std::string jsonStr = json.toString();
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonStr.c_str());
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, jsonStr.size());
-			
+
 		res = curl_easy_perform(curl);
 		if (res != CURLE_OK) {
 			Log::printError("curl_easy_perform() failed" + std::string(curl_easy_strerror(res)));
@@ -116,7 +116,7 @@ private:
 			Log::printError(err->toString());
 			return result;
 		}
-				 
+
 		JSONRes jsonRes = response.getArray("choices");
 		if (jsonRes.err != 0) {
 			Log::printError("choices not found due to JSON err:" + std::to_string(jsonRes.err));
@@ -200,7 +200,6 @@ public:
 			else {
 				answer = jsonRes.str;
 			}
-			
 		}
 		else
 		{
