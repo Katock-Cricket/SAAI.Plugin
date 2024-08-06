@@ -165,6 +165,7 @@ public:
 			item1.addString("content", "OK");
 			messages.push_back(item1);
 			initialized = true;
+			//printJSONArray(messages);
 			return "Init operation";
 		}
 		else {
@@ -213,6 +214,8 @@ public:
 	}
 
 	void clear() {
-		std::vector<JSON>().swap(messages);
+		if (messages.size() > 2) {
+			messages.erase(messages.begin() + 2, messages.end());
+		}
 	}
 };

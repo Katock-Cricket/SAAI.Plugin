@@ -41,7 +41,7 @@ private:
 		//Log::printInfo("addAudio");
 		AudioProcessor::processAudio();
 		//Log::printInfo("processAudio");
-		Log::printInfo("Num workers: " + std::to_string(ThreadPool::getWorkingNum()));
+		//Log::printInfo("Num workers: " + std::to_string(ThreadPool::getWorkingNum()));
 	}
 
 public:
