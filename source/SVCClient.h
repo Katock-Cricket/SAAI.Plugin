@@ -15,6 +15,9 @@ private:
 	static WSADATA wsaData;
 	static std::mutex wsaMutex;
 	static struct sockaddr_in serv_addr;
+	static bool alive;
+	static std::mutex aliveMutex;
+
 
 	static AudioPath decodeAudioPath(const std::string& input) {
 		AudioPath audioPath = { false, "", 0, 0 };
@@ -59,6 +62,11 @@ private:
 		return true;
 	}
 
+	static bool isAlive() {
+		std::lock_guard<std::mutex> lock(aliveMutex);
+		return alive;
+	}
+
 public:
 	static bool install() {
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -69,7 +77,7 @@ public:
 		serv_addr.sin_family = AF_INET;
 		serv_addr.sin_port = htons(65432);
 		inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr.s_addr);
-
+		alive = true;
 		return true;
 	}
 
@@ -81,6 +89,8 @@ public:
 		//std::string message = "end;end;end";
 		//send(sock, message.c_str(), message.length(), 0);
 		//closesocket(sock);
+		std::lock_guard<std::mutex> lock(aliveMutex);
+		alive = false;
 		WSACleanup();
 	}
 
@@ -96,14 +106,15 @@ public:
 
 		char buffer[1024] = { 0 };
 		std::string res;
-		while (true) {
-			int valread = recv(sock, buffer, 1024, 0);
+		int valread = 0;
+		while (isAlive()) {
+			valread = recv(sock, buffer, 1024, 0);
 			if (valread > 0) {
 				res = std::string(buffer);
+				audioPath = decodeAudioPath(res);
 				break;
 			}
 		}
-		audioPath = decodeAudioPath(res);
 		closesocket(sock);
 		return audioPath;
 	}

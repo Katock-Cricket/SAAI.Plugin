@@ -58,11 +58,11 @@ private:
 	}
 
 	static void uninstPipeline() {
+		SVCClient::uninstall();
 		ThreadPool::uninstall();
 		Subtitle::uninstall();
 		Speak::uninstall();
 		AIMain::uninstall();
-		SVCClient::uninstall();
 		TerminateProcess(processHandle);
 		Log::printInfo("Uninst SAAI");
 	}
