@@ -73,18 +73,22 @@ private:
 		}
 	}
 
+	static void print() {
+		CFont::SetProportional(true);
+		CFont::SetBackground(false, false);
+		CFont::SetScale(2.0f, 2.0f);
+		CFont::SetOrientation(eFontAlignment::ALIGN_CENTER);
+		CFont::SetCentreSize(SCREEN_WIDTH * 2 / 3);
+		CFont::SetColor({ 255, 255, 255 });
+		CFont::SetEdge(1);
+		CFont::SetFontStyle(eFontStyle::FONT_SUBTITLES);
+		CFont::PrintString(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 6 / 7, content);
+	}
+
 	static void pedSpeakSubtitle() {
 		std::lock_guard<std::mutex> lock(subtitleMutex);
 		if (isSpeaking()) {
-			CFont::SetProportional(true);
-			CFont::SetBackground(false, false);
-			CFont::SetScale(2.0f, 2.0f);
-			CFont::SetOrientation(eFontAlignment::ALIGN_CENTER);
-			CFont::SetCentreSize(SCREEN_WIDTH * 5 / 6);
-			CFont::SetColor({ 255, 255, 255 });
-			CFont::SetEdge(1);
-			CFont::SetFontStyle(eFontStyle::FONT_SUBTITLES);
-			CFont::PrintString(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 5 / 6, content);
+			print();
 		}
 		else {
 			pedSpeaking = nullptr;
@@ -94,15 +98,7 @@ private:
 	static void otherSubtitle() {
 		std::lock_guard<std::mutex> lock(subtitleMutex);
 		if (activate) {
-			CFont::SetProportional(true);
-			CFont::SetBackground(false, false);
-			CFont::SetScale(2.0f, 2.0f);
-			CFont::SetOrientation(eFontAlignment::ALIGN_CENTER);
-			CFont::SetCentreSize(SCREEN_WIDTH * 5 / 6);
-			CFont::SetColor({ 255, 255, 255 });
-			CFont::SetEdge(1);
-			CFont::SetFontStyle(eFontStyle::FONT_SUBTITLES);
-			CFont::PrintString(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 5 / 6, content);
+			print();
 		}
 	}
 

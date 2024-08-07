@@ -20,7 +20,6 @@ private:
 	static std::map<std::string, std::string> sys_prompt;
 	static int content_buffer_size;
 	static int audio_buffer_size;
-	static int messages_size;
 	static int speak_buffer_size;
 	static int chat_round;
 	static int speak_timeout;
@@ -84,7 +83,7 @@ public:
 	}
 
 	static unsigned int getMessagesSize() {
-		return messages_size;
+		return chat_round/2 + 2;
 	}
 
 	static unsigned int getSpeakbufferSize() {
@@ -143,7 +142,6 @@ public:
 
 			content_buffer_size = reader.GetInteger("Performance", "content_buffer_size", 3);
 			audio_buffer_size = reader.GetInteger("Performance", "audio_buffer_size", 3);
-			messages_size = reader.GetInteger("Performance", "messages_size", 5);
 			speak_buffer_size = reader.GetInteger("Performance", "speak_buffer_size", 5);
 			chat_round = reader.GetInteger("Performance", "chat_round", 5);
 			speak_timeout = reader.GetInteger("Performance", "speak_timeout", 6000);
@@ -171,7 +169,7 @@ public:
 		}
 		Log::printInfo("content_buffer_size: " + std::to_string(content_buffer_size), "../SAAI.log");
 		Log::printInfo("audio_buffer_size: " + std::to_string(audio_buffer_size), "../SAAI.log");
-		Log::printInfo("messages_size: " + std::to_string(messages_size), "../SAAI.log");
+		Log::printInfo("messages_size: " + std::to_string(getMessagesSize()), "../SAAI.log");
 		Log::printInfo("speak_buffer_size: " + std::to_string(speak_buffer_size), "../SAAI.log");
 		Log::printInfo("chat_round: " + std::to_string(chat_round), "../SAAI.log");
 		Log::printInfo("speak_timeout: " + std::to_string(speak_timeout), "../SAAI.log");
