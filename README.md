@@ -11,6 +11,8 @@ GTA San Andreas with AI（SAAI），将大语言模型(GPT)、TTS、SOVITS整合
 
 前后端通过socket实现IPC通信。
 
+![](./img/架构图.png)
+
 ## [Plugin](https://github.com/Katock-Cricket/SAAI.Plugin)架构
 
 功能：连接ChatGPT、组织AI行为、向AI语音Server发出内容生成的请求、操作游戏功能

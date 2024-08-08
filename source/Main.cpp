@@ -21,7 +21,7 @@ HANDLE StartProcess(const char* commandLine) {
 
 	ZeroMemory(&pi, sizeof(pi));
 
-	if (!CreateProcess(NULL,
+	if (!CreateProcessA(NULL,
 		(LPSTR)commandLine,
 		NULL,
 		NULL,
