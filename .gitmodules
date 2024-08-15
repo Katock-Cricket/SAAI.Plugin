@@ -1,0 +1,3 @@
+[submodule "thirdparty/plugin-sdk"]
+	path = thirdparty/plugin-sdk
+	url = git://github.com/DK22Pac/plugin-sdk

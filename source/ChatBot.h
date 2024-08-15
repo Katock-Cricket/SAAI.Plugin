@@ -56,7 +56,7 @@ private:
 		size_t posCn = answer.find(cnColon);
 		size_t posEn = answer.find(enColon);
 
-		size_t pos = min(posCn, posEn);
+		size_t pos = posCn < posEn ? posCn : posEn;
 
 		if (pos == std::string::npos) {
 			return answer;
