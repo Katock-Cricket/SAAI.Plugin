@@ -3,7 +3,8 @@ GTA San Andreas with AI（SAAI），将大语言模型(GPT)、TTS、SOVITS整合
 
 ## 软件架构
 
-开发环境：VS2022、Windows11
+开发环境：Windows11
+工具链：Cmake + MSVC
 
 [前端(**Plugin**)](https://github.com/Katock-Cricket/SAAI.Plugin)：[SAAI.Plugin] ASI插件 
 
