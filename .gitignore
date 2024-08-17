@@ -37,3 +37,6 @@
 /thirdparty/curl-build/cmake-build-debug
 /cmake-build-debug-mingw-32
 /cmake-build-release-mingw-32
+/cache
+/out
+/cmake-build-release-visual-studio

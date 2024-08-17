@@ -7,7 +7,7 @@ if "%GTA_SA_DIR%"=="" (
 )
 
 REM copy
-set SOURCE_PATH=cmake-build-release-mingw-32\source\libsaai.asi
+set SOURCE_PATH=cmake-build-release-visual-studio\saai.asi
 copy "%SOURCE_PATH%" "%GTA_SA_DIR%\scripts\"
 
 REM check success

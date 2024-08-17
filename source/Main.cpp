@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include <thread>
 
 #include "PedSpawner.h"

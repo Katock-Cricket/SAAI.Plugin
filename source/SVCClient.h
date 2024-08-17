@@ -3,10 +3,10 @@
 #include <string>
 #include <thread>
 #include <sstream>
+
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 
-#include "CHud.h"
 #include "utils.h"
 #include "Config.h"
 
