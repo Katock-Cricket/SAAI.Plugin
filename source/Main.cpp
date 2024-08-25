@@ -58,12 +58,17 @@ private:
 
 	static void uninstPipeline() {
 		SVCClient::uninstall();
+        Log::printInfo("Uninst svc-client");
 		ThreadPool::uninstall();
+        Log::printInfo("Uninst threadPool");
 		Subtitle::uninstall();
+        Log::printInfo("Uninst subtitle");
 		Speak::uninstall();
+        Log::printInfo("Uninst speak");
 		AIMain::uninstall();
+        Log::printInfo("Uninst AIMain");
 		TerminateProcess(processHandle);
-		Log::printInfo("Uninst SAAI");
+		Log::printInfo("close server, all uninst");
 	}
 
 public:

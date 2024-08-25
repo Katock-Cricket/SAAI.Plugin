@@ -59,7 +59,7 @@ public:
 		std::lock_guard<std::mutex> lock1(contentMutex);
 		std::queue<AIBeh*>().swap(contentBuf);
 		std::lock_guard<std::mutex> lock2(audioMutex);
-		std::queue<AIBeh*>().swap(audioBuf);
+		audioBuf.clear();
 		std::lock_guard<std::mutex> lock3(historyMutex);
 		history.clear();
 	}

@@ -27,7 +27,7 @@ static std::mutex historyMutex;
 static std::mutex chatMutex;
 
 static std::queue<AIBeh*> contentBuf;
-static std::queue<AIBeh*> audioBuf;
+static std::vector<AIBeh*> audioBuf; // allow multiple aiBeh in progress
 static std::vector<Record> history;
 static bool isChating;
 

@@ -103,7 +103,6 @@ public:
 
 		std::string message = content + ";" + speaker + ";" + (Config::getCN() ? "cn" : "en");
 		send(sock, message.c_str(), message.length(), 0);
-
 		char buffer[1024] = { 0 };
 		std::string res;
 		int valread = 0;

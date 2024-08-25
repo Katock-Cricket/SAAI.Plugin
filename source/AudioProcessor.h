@@ -7,15 +7,25 @@
 
 class AudioProcessor {
 private:
+
+    static void deleteAIBehFromAudioBuf(AIBeh* aiBeh){
+        for(auto it = audioBuf.begin(); it != audioBuf.end(); it++){
+            if(**it == *aiBeh){
+                audioBuf.erase(it);
+                delete aiBeh;
+                aiBeh = nullptr;
+                return;
+            }
+        }
+    }
+
 	static void generateAudio(AIBeh* aiBeh) {
 		Log::printInfo("in generate audio");
 		AIPed* aiPed = aiBeh->getAIPed();
 		if (aiPed == nullptr || !aiPed->isValid()) {
 			std::lock_guard<std::mutex> lock(audioMutex);
-			audioBuf.pop();
-			delete aiBeh;
-			aiBeh = nullptr;
-			return;
+            deleteAIBehFromAudioBuf(aiBeh);
+            return;
 		}
 		CPed* ped = aiPed->getPed();
 		std::string name = aiPed->getName();
@@ -27,15 +37,22 @@ private:
 		}
 		while (!Speak::canAddSpeak()) { //may cost time
 			Log::printInfo("waiting for speaker");
-			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 		std::unique_lock<std::mutex> lock(audioMutex);
-		audioBuf.pop();
-		delete aiBeh;
-		aiBeh = nullptr;
+        deleteAIBehFromAudioBuf(aiBeh);
 		lock.unlock();
 		Speak::addSpeak(ped, audioPath, content); // time costing
 	}
+
+    static AIBeh* findNextBeh() {
+        for(auto &aiBeh : audioBuf) {
+            if(!aiBeh->isWorking()){
+                return aiBeh;
+            }
+        }
+        return nullptr;
+    }
 
 public:
 	static void addAudio() {
@@ -55,17 +72,16 @@ public:
 			contentBuf.pop();
 			return;
 		}
-		if (aiBeh->getContent() == "") {
-			//Log::printInfo("A beh is waiting for content, don't add for now");
-			return;
-		}
-		aiBeh->finish();
+        if (aiBeh->getContent().empty()) {
+            return;
+        }
 		contentBuf.pop();
+        aiBeh->finish();
 		if (aiBeh->getContent() == "Error") {
 			Log::printError("Do not gen audio for any 'Error' ");
 			return;
 		}
-		audioBuf.push(aiBeh);
+		audioBuf.push_back(aiBeh);
 		Log::printInfo("Add a beh for audio generation");
 		Log::printInfo("================================");
 	}
@@ -76,14 +92,8 @@ public:
 			//Log::printInfo("AudioBuf is empty, no audio to generate");
 			return;
 		}
-		AIBeh* aiBeh = audioBuf.front();
+		AIBeh* aiBeh = findNextBeh();
 		if (aiBeh == nullptr) {
-			Log::printError("beh in audioBuf is null, when precessing audio");
-			audioBuf.pop();
-			return;
-		}
-		if (aiBeh->isWorking()) {
-			//Log::printInfo("The beh is generating audio, only 1 beh can work");
 			return;
 		}
 		aiBeh->start();

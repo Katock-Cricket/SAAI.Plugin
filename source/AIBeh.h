@@ -52,4 +52,8 @@ public:
 	void finish() {
 		working = false;
 	}
+
+    inline bool operator==(const AIBeh &aiBeh) const {
+        return this->content == aiBeh.content;
+    }
 };
