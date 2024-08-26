@@ -7,8 +7,8 @@
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 
-#include "shared/utils.h"
-#include "config/Config.h"
+#include "utils.h"
+#include "Config.h"
 
 class SVCClient {
 private:

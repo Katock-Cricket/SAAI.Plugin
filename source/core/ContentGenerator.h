@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AIBeh.h"
-#include "config/Config.h"
+#include "Config.h"
 #include "SharedMem.h"
 
 class ContentGenerator {

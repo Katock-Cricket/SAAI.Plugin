@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AIBeh.h"
-#include "config/Config.h"
+#include "Config.h"
 #include "SharedMem.h"
 #include "ContextGenerator.h"
 #include "ContentGenerator.h"
@@ -35,6 +35,7 @@ private:
 		//Log::printInfo("---------------AIMain Pipeline-----------------");
 		cleanAIPedPool();
 		//Log::printInfo("cleanAIPedPool");
+        //Log::printInfo("processContent");
 		ContentGenerator::processContent();
 		//Log::printInfo("processContent");
 		AudioProcessor::addAudio();
@@ -50,8 +51,8 @@ public:
 			AIPed* playerAIPed = new AIPed(FindPlayerPed(), "Carl");
 			AIPedPool.push_back(playerAIPed);
 			};
-
-		Events::gameProcessEvent.Add(pipeline);
+        ContextGenerator::install();
+        Events::gameProcessEvent.Add(pipeline);
 	}
 
 	static void uninstall() { // uninstrall when shutdown

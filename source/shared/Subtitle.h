@@ -5,7 +5,7 @@
 
 #include "plugin.h"
 #include "CFont.h"
-#include "config/Config.h"
+#include "Config.h"
 #include "ThreadPool.h"
 
 using namespace plugin;

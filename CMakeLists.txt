@@ -18,9 +18,25 @@ add_definitions(-DCURL_STATICLIB)
 add_subdirectory(thirdparty/plugin-sdk-build)
 
 # build saai
-file(GLOB SOURCES ${SOURCE_DIR}/*)
+file(GLOB SOURCES
+        ${SOURCE_DIR}/*
+        ${SOURCE_DIR}/chatbot/*
+        ${SOURCE_DIR}/config/*
+        ${SOURCE_DIR}/core/*
+        ${SOURCE_DIR}/shared/*
+        ${SOURCE_DIR}/svc-client/*
+        ${SOURCE_DIR}/unittest/*
+)
 add_library(saai SHARED ${SOURCES})
-target_include_directories(saai PRIVATE ${SOURCE_DIR}/ ${CURL_INCLUDE_DIR})
+target_include_directories(saai PRIVATE
+        ${SOURCE_DIR}/
+        ${SOURCE_DIR}/chatbot/
+        ${SOURCE_DIR}/config/
+        ${SOURCE_DIR}/core/
+        ${SOURCE_DIR}/shared/
+        ${SOURCE_DIR}/svc-client/
+        ${SOURCE_DIR}/unittest/
+        ${CURL_INCLUDE_DIR})
 
 target_link_libraries(saai PRIVATE
         gtasa

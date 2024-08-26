@@ -7,12 +7,12 @@
 #include "CTaskComplexWanderStandard.h"
 #include "CHud.h"
 
-#include "shared/CheatActivate.h"
-#include "shared/KeyActivate.h"
-#include "shared/Subtitle.h"
-#include "shared/Speak.h"
-#include "config/Config.h"
-#include "shared/ThreadPool.h"
+#include "CheatActivate.h"
+#include "KeyActivate.h"
+#include "Subtitle.h"
+#include "Speak.h"
+#include "Config.h"
+#include "ThreadPool.h"
 
 class UnitTest : public CheatActivate, public KeyActivate {
 public:

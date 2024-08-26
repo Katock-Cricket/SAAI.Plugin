@@ -3,7 +3,7 @@
 #include<queue>
 
 #include "CPed.h"
-#include "svc-client/SVCClient.h"
+#include "SVCClient.h"
 #include "Subtitle.h"
 #include "utils.h"
 

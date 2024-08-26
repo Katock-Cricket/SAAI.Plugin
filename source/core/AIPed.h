@@ -4,9 +4,9 @@
 #include "CPed.h"
 #include "extensions/ScriptCommands.h"
 
-#include "chatbot/ChatBot.h"
-#include "shared/Speak.h"
-#include "shared/Subtitle.h"
+#include "ChatBot.h"
+#include "Speak.h"
+#include "Subtitle.h"
 
 class AIPed {
 private:

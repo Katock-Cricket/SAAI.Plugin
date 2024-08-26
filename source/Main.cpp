@@ -1,13 +1,13 @@
 #include <thread>
 
-#include "shared/PedSpawner.h"
-#include "shared/Subtitle.h"
-#include "shared/Speak.h"
-#include "config/Config.h"
-#include "unittest/UnitTest.h"
-#include "core/AIMain.h"
-#include "shared/Log.h"
-#include "shared/ThreadPool.h"
+#include "PedSpawner.h"
+#include "Subtitle.h"
+#include "Speak.h"
+#include "Config.h"
+#include "UnitTest.h"
+#include "AIMain.h"
+#include "Log.h"
+#include "ThreadPool.h"
 
 HANDLE StartProcess(const char* commandLine) {
 	STARTUPINFO si;
@@ -52,7 +52,6 @@ private:
 		Subtitle::install();
 		Speak::install();
 		//UnitTest::install();
-		ContextGenerator::install();
 		AIMain::install();
 	}
 

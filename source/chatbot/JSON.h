@@ -7,7 +7,7 @@
 #include <sstream>
 #include <cctype>
 
-#include "shared/Log.h"
+#include "Log.h"
 
 enum JSONErr
 {

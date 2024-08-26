@@ -7,7 +7,7 @@
 #include <queue>
 #include <functional>
 
-#include "config/Config.h"
+#include "Config.h"
 
 class ThreadPool {
 private:

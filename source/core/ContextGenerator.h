@@ -2,11 +2,11 @@
 #include <random>
 #include <ctime>
 
-#include "shared/CheatActivate.h"
+#include "CheatActivate.h"
 #include "AIBeh.h"
-#include "config/Config.h"
+#include "Config.h"
 #include "SharedMem.h"
-#include "shared/ThreadPool.h"
+#include "ThreadPool.h"
 
 class ContextGenerator : public CheatActivate {
 private:
@@ -72,7 +72,7 @@ private:
 		if (cheat_pressed(Config::getCheatFreeChat())) {
 			std::lock_guard<std::mutex> lock(chatMutex);
 			isChating = true;
-			CHud::SetHelpMessage("Free chat luanching", true, false, false);
+			CHud::SetHelpMessage("Free chat launching", true, false, false);
 		}
 	}
 

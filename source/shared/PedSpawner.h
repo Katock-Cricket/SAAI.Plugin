@@ -18,7 +18,7 @@
 #include "CheatActivate.h"
 #include "Subtitle.h"
 #include "Speak.h"
-#include "core/AIMain.h"
+#include "AIMain.h"
 
 class PedSpawner : public KeyActivate, public CheatActivate {
 private:
