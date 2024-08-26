@@ -4,9 +4,9 @@
 #include "CPed.h"
 #include "extensions/ScriptCommands.h"
 
-#include "ChatBot.h"
-#include "Speak.h"
-#include "Subtitle.h"
+#include "chatbot/ChatBot.h"
+#include "shared/Speak.h"
+#include "shared/Subtitle.h"
 
 class AIPed {
 private:
@@ -18,7 +18,7 @@ private:
 	void joinGroup() {
 		int gr;
 		Command<Commands::GET_PLAYER_GROUP>(0, &gr);
-		Log::printInfo("Get gr");
+//		Log::printInfo("Get gr");
 		if (!Command<Commands::IS_GROUP_MEMBER>(gr, ped)) {
 			Log::printInfo("This Ped is not in player's group, add it");
 			Command<Commands::SET_GROUP_LEADER>(gr, FindPlayerPed());

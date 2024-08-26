@@ -1,10 +1,10 @@
 #pragma once
 
 #include "AIBeh.h"
-#include "Config.h"
+#include "config/Config.h"
 #include "SharedMem.h"
-#include "ChatController.h"
-#include "ContentProcessor.h"
+#include "ContextGenerator.h"
+#include "ContentGenerator.h"
 #include "AudioProcessor.h"
 
 class AIMain {
@@ -35,7 +35,7 @@ private:
 		//Log::printInfo("---------------AIMain Pipeline-----------------");
 		cleanAIPedPool();
 		//Log::printInfo("cleanAIPedPool");
-		ContentProcessor::processContent();
+		ContentGenerator::processContent();
 		//Log::printInfo("processContent");
 		AudioProcessor::addAudio();
 		//Log::printInfo("addAudio");

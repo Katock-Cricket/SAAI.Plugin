@@ -1,9 +1,9 @@
 #pragma once
 
 #include "AIBeh.h"
-#include "Config.h"
+#include "config/Config.h"
 #include "SharedMem.h"
-#include "ThreadPool.h"
+#include "shared/ThreadPool.h"
 
 class AudioProcessor {
 private:

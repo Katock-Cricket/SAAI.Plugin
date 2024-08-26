@@ -1,10 +1,10 @@
 #pragma once
 
 #include "AIBeh.h"
-#include "Config.h"
+#include "config/Config.h"
 #include "SharedMem.h"
 
-class ContentProcessor {
+class ContentGenerator {
 private:
 	static void printHistory() {
 		Log::printInfo("History:---------------------------");

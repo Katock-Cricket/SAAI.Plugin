@@ -3,7 +3,7 @@
 
 #include "INIReader.h"
 
-#include "Log.h"
+#include "shared/Log.h"
 
 class Config {
 private:

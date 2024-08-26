@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AIBeh.h"
-#include "Config.h"
+#include "config/Config.h"
 
 class Record {
 public:

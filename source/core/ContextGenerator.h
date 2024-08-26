@@ -2,13 +2,13 @@
 #include <random>
 #include <ctime>
 
-#include "CheatActivate.h"
+#include "shared/CheatActivate.h"
 #include "AIBeh.h"
-#include "Config.h"
+#include "config/Config.h"
 #include "SharedMem.h"
-#include "ThreadPool.h"
+#include "shared/ThreadPool.h"
 
-class ChatController : public CheatActivate {
+class ContextGenerator : public CheatActivate {
 private:
 
 	static AIPed* chooseAIPedToSpeak() {
@@ -86,7 +86,7 @@ private:
 	}
 
 	static void pipeline() {
-		//Log::printInfo("---------------ChatController Pipeline-----------------");
+		//Log::printInfo("---------------ContextGenerator Pipeline-----------------");
 		autoDeactivateChat();
 		//Log::printInfo("autoDeactivateChat");
 		activateChat();

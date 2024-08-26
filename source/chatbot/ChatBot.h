@@ -1,13 +1,13 @@
 ﻿#pragma once
-#include <curl/curl.h>
+#include "curl/curl.h"
 #include <sstream>
 #include <string>
 
 #include "CHud.h"
 
-#include "Config.h"
-#include "Subtitle.h"
-#include "Log.h"
+#include "config/Config.h"
+#include "shared/Subtitle.h"
+#include "shared/Log.h"
 #include "JSON.h"
 
 class ChatBot {
@@ -62,7 +62,7 @@ private:
 			return answer;
 		}
 		std::string ret = answer.substr(pos + 1);
-		Log::printInfo("Chatbot's answer contains colon, oringin ans: " + answer);
+		Log::printInfo("chatbot's answer contains colon, oringin ans: " + answer);
 		Log::printInfo("auto delete colon: " + ret);
 		return ret;
 	}
