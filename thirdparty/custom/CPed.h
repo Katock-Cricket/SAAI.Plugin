@@ -73,7 +73,8 @@ public:
     CAEWeaponAudioEntity		m_weaponAudio;
     char field_43C[36];
     char field_460[8];
-    int field_468;
+//    int field_468;
+    void* ai;
     /* https://code.google.com/p/mtasa-blue/source/browse/tags/1.3.4/MTA10/game_sa/CPedSA.h */
     struct {
         unsigned int bIsStanding : 1; // is ped standing on something

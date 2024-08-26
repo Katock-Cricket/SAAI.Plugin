@@ -6,11 +6,12 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
-set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/source")
+set(SAAI_DIR "${CMAKE_SAAI_DIR}/saai")
+set(INCLUDES "${SAAI_DIR}/include")
 
 # include curl
-set(CURL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/thirdparty/curl/include")
-set(CURL_LIBRARY "${CMAKE_SOURCE_DIR}/thirdparty/curl/lib/libcurl_a.lib")
+set(CURL_INCLUDE_DIR "${CMAKE_SAAI_DIR}/thirdparty/curl/include")
+set(CURL_LIBRARY "${CMAKE_SAAI_DIR}/thirdparty/curl/lib/libcurl_a.lib")
 find_package(CURL REQUIRED)
 add_definitions(-DCURL_STATICLIB)
 
@@ -19,24 +20,19 @@ add_subdirectory(thirdparty/plugin-sdk-build)
 
 # build saai
 file(GLOB SOURCES
-        ${SOURCE_DIR}/*
-        ${SOURCE_DIR}/chatbot/*
-        ${SOURCE_DIR}/config/*
-        ${SOURCE_DIR}/core/*
-        ${SOURCE_DIR}/shared/*
-        ${SOURCE_DIR}/svc-client/*
-        ${SOURCE_DIR}/unittest/*
+        ${SAAI_DIR}/src/*.cpp
 )
 add_library(saai SHARED ${SOURCES})
+
 target_include_directories(saai PRIVATE
-        ${SOURCE_DIR}/
-        ${SOURCE_DIR}/chatbot/
-        ${SOURCE_DIR}/config/
-        ${SOURCE_DIR}/core/
-        ${SOURCE_DIR}/shared/
-        ${SOURCE_DIR}/svc-client/
-        ${SOURCE_DIR}/unittest/
-        ${CURL_INCLUDE_DIR})
+        ${CURL_INCLUDE_DIR}
+        ${INCLUDES}/chatbot/
+        ${INCLUDES}/config/
+        ${INCLUDES}/core/
+        ${INCLUDES}/shared/
+        ${INCLUDES}/svc-client/
+        ${INCLUDES}/unittest/
+)
 
 target_link_libraries(saai PRIVATE
         gtasa

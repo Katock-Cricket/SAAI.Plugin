@@ -40,3 +40,4 @@
 /cache
 /out
 /cmake-build-release-visual-studio
+/thirdparty/plugin-sdk
