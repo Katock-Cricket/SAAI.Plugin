@@ -69,8 +69,8 @@ socket连接，Plugin提供人物+内容字段，Server生成对应的音频存�
 v1.1开发计划：
 
 - [x] 整理为CMake项目
-- [ ] 优化TTS
-- [ ] 将TTS单独分离增加一级流水线
+- [x] 优化TTS
+- [x] 将TTS单独分离增加一级流水线
 - [ ] AI整合进CPed类，取消AIPedPool
 - [ ] 优化Prompt
 - [ ] 试试Claude
