@@ -5,11 +5,11 @@
 
 class Record {
 public:
-	AIPed* aiPed;
+	CPed* ped;
 	std::string name;
 	std::string content;
-	Record(AIPed* aiPed, std::string name, std::string content) {
-		this->aiPed = aiPed;
+	Record(CPed* ped, std::string name, std::string content) {
+		this->ped = ped;
 		this->name = name;
 		this->content = content;
 	}
@@ -17,8 +17,6 @@ public:
 		return name + ": " + content;
 	}
 };
-
-static std::vector<AIPed*> AIPedPool; // use only in funcs-between-frames(sync), no need for mutex
 
 //bellow are shared resources
 static std::mutex contentMutex;
@@ -30,11 +28,6 @@ static std::queue<AIBeh*> contentBuf;
 static std::vector<AIBeh*> audioBuf; // allow multiple aiBeh in progress
 static std::vector<Record> history;
 static bool isChating;
-
-static void addAIPed(CPed* ped, std::string name) {
-	AIPed* aiPed = new AIPed(ped, name);
-	AIPedPool.push_back(aiPed);
-}
 
 static bool noValidRecord() { // need mutex
 	if (history.empty()) {

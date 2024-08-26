@@ -15,9 +15,9 @@ private:
 	}
 
 	static void generateContent(AIBeh* aiBeh) {
-		AIPed* aiPed = aiBeh->getAIPed();
-		if (aiPed == nullptr || !aiPed->isValid()) {
-			Log::printError("invalid aiPed");
+		CPed* ped = aiBeh->getPed();
+		if (ped == nullptr || !IsPedPointerValid(ped)) {
+			Log::printError("invalid ped");
 			std::lock_guard<std::mutex> lock(contentMutex);
 			contentBuf.pop();
 			delete aiBeh;
@@ -26,7 +26,7 @@ private:
 		}
 		std::string context = aiBeh->getContext();
 		Log::printInfo("Start generating content for the beh");
-		std::string content = aiPed->answer(context); // time costing
+		std::string content = ((AI*)ped->ai)->answer(context); // time costing
 		aiBeh->setContent(content);
 		if (content == "Error") {
 			Log::printError("'Error' don't be recorded in history");

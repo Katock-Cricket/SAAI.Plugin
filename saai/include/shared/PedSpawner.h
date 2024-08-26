@@ -43,11 +43,16 @@ private:
 	}
 
 	static bool alreadySpawned(std::string pedName) {
-		for (auto& aiPed : AIPedPool) {
-			if (aiPed->getName() == pedName) {
-				return true;
-			}
-		}
+        for (int i = 0; i < CPools::ms_pPedPool->m_nSize; i++) {
+            CPed *ped = CPools::ms_pPedPool->GetAt(i);
+            if(ped->ai == 0){
+                continue;
+            }
+            Log::printInfo("will get name here");
+            if (static_cast<AI*>(ped->ai)->getName() == pedName) {
+                return true;
+            }
+        }
 		return false;
 	}
 
@@ -69,6 +74,11 @@ private:
 					return;
 				}
 				CPed* ped = createSpecialActor(it->second, modelName);
+
+                AI* ai = new AI();
+                ai->setName(pedName);
+                ped->ai = ai;
+
 				ped->SetPosn(FindPlayerPed()->TransformFromObjectSpace(CVector(-2.0f, 0.0f, 0.0f)));
 				ped->SetOrientation(0.0f, 0.0f, 0.0f);
 				CWorld::Add(ped);
@@ -81,7 +91,6 @@ private:
 				ped->GiveWeapon(WEAPON_AK47, 10000, true);
 				//ped->SetCurrentWeapon(WEAPON_AK47);
 				CStreaming::SetModelIsDeletable(MODEL_AK47);
-				addAIPed(ped, pedName);
 				CHud::SetHelpMessage(std::string("Spawned " + pedName).c_str(), true, false, false);
 			}
 		}

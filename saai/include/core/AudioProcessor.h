@@ -21,14 +21,13 @@ private:
 
 	static void generateAudio(AIBeh* aiBeh) {
 		Log::printInfo("in generate audio");
-		AIPed* aiPed = aiBeh->getAIPed();
-		if (aiPed == nullptr || !aiPed->isValid()) {
-			std::lock_guard<std::mutex> lock(audioMutex);
+		CPed* ped = aiBeh->getPed();
+        if (ped == nullptr || !IsPedPointerValid(ped)) {
+            std::lock_guard<std::mutex> lock(audioMutex);
             deleteAIBehFromAudioBuf(aiBeh);
             return;
-		}
-		CPed* ped = aiPed->getPed();
-		std::string name = aiPed->getName();
+        }
+		std::string name = ((AI*)ped->ai)->getName();
 		std::string content = aiBeh->getContent();
 		AudioPath audioPath = SVCClient::request_audio(content, name); // time costing
 		if (!audioPath.valid) {

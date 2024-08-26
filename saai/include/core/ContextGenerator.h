@@ -10,41 +10,55 @@
 
 class ContextGenerator : public CheatActivate {
 private:
+    static std::vector<CPed*> getPedCanFreeChat () {
+        std::vector<CPed*> ret;
+        for (int i = 0; i < CPools::ms_pPedPool->m_nSize; i++) {
+            CPed *ped = CPools::ms_pPedPool->GetAt(i);
+            if(ped == nullptr || !IsPedPointerValid(ped)){
+                continue;
+            }
+            if(((AI*)ped->ai) != 0 && ((AI*)ped->ai)->getName()!= ""){ // have ai && is special npc
+                ret.push_back(ped);
+            }
+        }
+        return ret;
+    }
 
-	static AIPed* chooseAIPedToSpeak() {
-		if (AIPedPool.size() < 2) {
+	static CPed* choosePedToSpeak() {
+        std::vector<CPed*> pedCanFreeChat = getPedCanFreeChat();
+		if (pedCanFreeChat.size() < 2) {
 			return nullptr; // there are less than 2 peds, no conversation
 		}
 
-		AIPed* lastAIPed = nullptr;
+		CPed* lastPed = nullptr;
 		std::lock_guard<std::mutex> lock(historyMutex);
 		if (history.empty()) {
-			lastAIPed = AIPedPool[0]; //carl is the default first AIPed
+            lastPed = pedCanFreeChat[0]; //carl is the default first AIPed
 		}
 		else {
-			lastAIPed = history.back().aiPed;
+            lastPed = history.back().ped;
 		}
 		// choose a ped that is different from lastAIPed
-		AIPed* aiPed;
+		CPed* ped;
 		std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
 		std::uniform_int_distribution<std::size_t> dist;
-		dist = std::uniform_int_distribution<std::size_t>(0, AIPedPool.size() - 1);
+		dist = std::uniform_int_distribution<std::size_t>(0, pedCanFreeChat.size() - 1);
 		do {
 			std::size_t random_index = dist(rng);
-			aiPed = AIPedPool[random_index];
-		} while (aiPed == lastAIPed);
-		return aiPed;
+            ped = pedCanFreeChat[random_index];
+		} while (ped == lastPed);
+		return ped;
 	}
 
-	static std::string generateContext(AIPed* aiPedToSpeak) {
+	static std::string generateContext(CPed* pedToSpeak) {
 		std::lock_guard<std::mutex> lock(historyMutex);
 		if (noValidRecord()) { // generate context that starts a chat
 			std::string nameBuffer = "";
-			for (auto& aiPed : AIPedPool) {
-				if (aiPed == aiPedToSpeak) {
+			for (CPed* ped : getPedCanFreeChat()) {
+				if (ped == pedToSpeak) {
 					continue;
 				}
-				nameBuffer += aiPed->getName() + ", ";
+				nameBuffer += ((AI*)ped->ai)->getName() + ", ";
 			}
 			return Config::getMeetPrompt() + nameBuffer;
 		}
@@ -112,19 +126,19 @@ public:
 			//Log::printInfo("contentBuf is full, don't add");
 			return;
 		}
-		AIPed* aiPedToSpeak = chooseAIPedToSpeak();
-		if (aiPedToSpeak == nullptr) {
+		CPed* pedToSpeak = choosePedToSpeak();
+		if (pedToSpeak == nullptr || !IsPedPointerValid(pedToSpeak)) {
 			//Log::printInfo("No ped to talk now, CJ is alone");
 			return;
 		}
-		std::string context = generateContext(aiPedToSpeak);
+		std::string context = generateContext(pedToSpeak);
 		if (!contentBuf.empty() && samePrompt(contentBuf.back()->getContext(), context)) {
 			//Log::printInfo("duplicate context, can't add beh now");
 			return;
 		}
 		std::lock_guard<std::mutex> lock2(historyMutex);
-		history.push_back(Record(aiPedToSpeak, aiPedToSpeak->getName(), ""));
-		AIBeh* aiBeh = new AIBeh(aiPedToSpeak);
+		history.push_back(Record(pedToSpeak, ((AI*)pedToSpeak->ai)->getName(), ""));
+		AIBeh* aiBeh = new AIBeh(pedToSpeak);
 		aiBeh->setContext(context);
 		contentBuf.push(aiBeh);
 		Log::printInfo("Add a beh for content generation");

@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "AIPed.h"
+#include "AI.h"
 
 class AIBeh {
 private:
-	AIPed* self;
+	CPed* self;
 	std::string context;
 	std::string content;
 	bool working;
@@ -14,14 +14,14 @@ public:
 		this->working = false;
 	}
 
-	AIBeh(AIPed* self) {
+	AIBeh(CPed* self) {
 		this->self = self;
 		this->context = "";
 		this->content = "";
 		this->working = false;
 	}
 
-	AIPed* getAIPed() {
+	CPed* getPed() {
 		return self;
 	}
 
