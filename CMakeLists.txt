@@ -6,12 +6,12 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
-set(SAAI_DIR "${CMAKE_SAAI_DIR}/saai")
+set(SAAI_DIR "${CMAKE_SOURCE_DIR}/saai")
 set(INCLUDES "${SAAI_DIR}/include")
 
 # include curl
-set(CURL_INCLUDE_DIR "${CMAKE_SAAI_DIR}/thirdparty/curl/include")
-set(CURL_LIBRARY "${CMAKE_SAAI_DIR}/thirdparty/curl/lib/libcurl_a.lib")
+set(CURL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/thirdparty/curl/include")
+set(CURL_LIBRARY "${CMAKE_SOURCE_DIR}/thirdparty/curl/lib/libcurl_a.lib")
 find_package(CURL REQUIRED)
 add_definitions(-DCURL_STATICLIB)
 
@@ -22,7 +22,9 @@ add_subdirectory(thirdparty/plugin-sdk-build)
 file(GLOB SOURCES
         ${SAAI_DIR}/src/*.cpp
 )
-add_library(saai SHARED ${SOURCES})
+add_library(saai SHARED
+        ${SOURCES}
+)
 
 target_include_directories(saai PRIVATE
         ${CURL_INCLUDE_DIR}
