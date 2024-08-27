@@ -12,7 +12,7 @@ GTA San Andreas with AI（SAAI），将大语言模型(GPT)、TTS、SOVITS整合
 
 ![](./img/架构图.png)
 
-​    **[[细节实现说明]](./doc/Document.md)** | **[[开发者文档]](./doc/Get Started.md)**
+​    **[[细节实现说明]](./doc/Document.md)** | **[[开发者文档]](./doc/GetStarted.md)**
 
 **持续迭代中…**
 
