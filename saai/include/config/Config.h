@@ -25,6 +25,7 @@ private:
 	static int speak_timeout;
 	static int log_level;
 	static int num_workers;
+    static int free_wait_time;
 
 public:
 	static std::string getCheatFreeChat() {
@@ -106,6 +107,10 @@ public:
 		return num_workers;
 	}
 
+    static unsigned int getFreeWaitTime() {
+        return free_wait_time;
+    }
+
 	static bool install(const char* INIPath) {
 		INIReader reader(INIPath);
 
@@ -147,6 +152,7 @@ public:
 			speak_timeout = reader.GetInteger("Performance", "speak_timeout", 6000);
 			log_level = reader.GetInteger("Performance", "log_level", 0);
 			num_workers = reader.GetInteger("Performance", "num_workers", 10);
+            free_wait_time = reader.GetInteger("Performance", "free_wait_time", 0);
 		}
 		catch (std::exception& e) {
 			Log::printError(e.what());
@@ -175,6 +181,7 @@ public:
 		Log::printInfo("speak_timeout: " + std::to_string(speak_timeout), "../SAAI.log");
 		Log::printInfo("speak_timeout: " + std::to_string(log_level), "../SAAI.log");
 		Log::printInfo("num_workers: " + std::to_string(num_workers), "../SAAI.log");
+        Log::printInfo("free_wait_time: " + std::to_string(free_wait_time), "../SAAI.log");
 		Log::setLevel(log_level);
 		return true;
 	}

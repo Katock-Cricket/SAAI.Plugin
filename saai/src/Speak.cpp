@@ -15,3 +15,5 @@ CPed* Speak::pedSpeaking = nullptr;
 bool Speak::speakLock = false;
 std::mutex Speak::lockMutex;
 unsigned int Speak::timer;
+std::mutex Speak::extraWaitMutex;
+bool Speak::extraWait = false;

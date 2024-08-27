@@ -53,15 +53,15 @@ public:
 //            Log::printInfo("ped->ai is not null");
             return;
         }
-        Log::printInfo("create ai for ped");
+//        Log::printInfo("create ai for ped");
         AI *ai = new AI();
         if (ped == FindPlayerPed()) {
             ai->setName("Carl");
-            Log::printInfo("add ai for cj");
+//            Log::printInfo("add ai for cj");
         }
         ped->ai = ai;
-        Log::printInfo("addr of ai when create: " + std::to_string(reinterpret_cast<uintptr_t>(ped->ai)));
-        Log::printInfo("get name when create: " + static_cast<AI *>(ped->ai)->getName());
+//        Log::printInfo("addr of ai when create: " + std::to_string(reinterpret_cast<uintptr_t>(ped->ai)));
+//        Log::printInfo("get name when create: " + static_cast<AI *>(ped->ai)->getName());
     }
 
     static void install() {

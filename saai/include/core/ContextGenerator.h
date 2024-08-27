@@ -50,7 +50,7 @@ private:
 		return ped;
 	}
 
-	static std::string generateContext(CPed* pedToSpeak) {
+	static std::pair<std::string, bool> generateContext(CPed* pedToSpeak) {
 		std::lock_guard<std::mutex> lock(historyMutex);
 		if (noValidRecord()) { // generate context that starts a chat
 			std::string nameBuffer = "";
@@ -60,15 +60,15 @@ private:
 				}
 				nameBuffer += static_cast<AI*>(ped->ai)->getName() + ", ";
 			}
-			return Config::getMeetPrompt() + nameBuffer;
+			return {Config::getMeetPrompt() + nameBuffer, true};
 		}
 		else { // use last Record as the context
 			Record* lastRec = lastRecord();
 			if (lastRec == nullptr) {
 				Log::printError("no last rec");
-				return "";
+				return {" ", true};
 			}
-			return lastRec->toString();
+			return {lastRec->toString(), false};
 		}
 	}
 
@@ -131,15 +131,16 @@ public:
 			//Log::printInfo("No ped to talk now, CJ is alone");
 			return;
 		}
-		std::string context = generateContext(pedToSpeak);
-		if (!contentBuf.empty() && samePrompt(contentBuf.back()->getContext(), context)) {
+		std::pair<std::string, bool>  context = generateContext(pedToSpeak);
+		if (!contentBuf.empty() && samePrompt(contentBuf.back()->getContext(), context.first)) {
 			//Log::printInfo("duplicate context, can't add beh now");
 			return;
 		}
 		std::lock_guard<std::mutex> lock2(historyMutex);
 		history.push_back(Record(pedToSpeak, static_cast<AI*>(pedToSpeak->ai)->getName(), ""));
 		AIBeh* aiBeh = new AIBeh(pedToSpeak);
-		aiBeh->setContext(context);
+		aiBeh->setContext(context.first);
+        aiBeh->setIsFirstOfFreeChat(context.second);
 		contentBuf.push(aiBeh);
 		Log::printInfo("Add a beh for content generation");
 		Log::printInfo("================================");

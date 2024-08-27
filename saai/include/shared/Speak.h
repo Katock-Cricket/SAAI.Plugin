@@ -22,6 +22,8 @@ private:
 	static std::mutex lockMutex;
 	static bool speakLock;
 	static unsigned int timer;
+    static std::mutex extraWaitMutex;
+    static bool extraWait;
 
 	static int getBankNumber(std::string pakName, unsigned bankNumber) {
 		std::map<std::string, int>::iterator it;
@@ -80,18 +82,19 @@ private:
 
 	static bool canSpeak() {
 		std::lock_guard<std::mutex> lock0(pedMutex);
-		// no ped is speaking and have speak task
+        std::lock_guard<std::mutex> lock1(extraWaitMutex);
+		// no ped is speaking and have speaking task
 		if (pedSpeaking == nullptr || !IsPedPointerValid(pedSpeaking)) {
 			std::lock_guard<std::mutex> lock(lockMutex);
 			speakLock = false;;
-			return !speakBuf.empty();
+			return !speakBuf.empty() && !extraWait;
 		}
 		if (pedSpeaking->GetPedTalking()) {
 			return false;
 		}
 		std::lock_guard<std::mutex> lock(lockMutex);
 		speakLock = false;
-		return !speakBuf.empty();
+		return !speakBuf.empty() && !extraWait;
 	}
 
 	static void processSpeak() {
@@ -157,18 +160,42 @@ private:
 			(&(ped->m_pedSpeech), 0x35, arg0, 100, 0, 0);
 	}
 
+    static void detectAudioField() {
+        if (pedSpeaking == nullptr || !IsPedPointerValid(pedSpeaking)) {
+            return;
+        }
+        if (!pedSpeaking->GetPedTalking()) {
+            return;
+        }
+        // made sure there is a ped speaking
+        CAESound* sound = pedSpeaking->m_pedSpeech.m_pSound;
+        if (sound == nullptr) {
+            Log::printError("sound is null when detect audio field");
+            return;
+        }
+        // set uncancellable and unpauseable
+        sound->m_bUncancellable = 1;
+        sound->m_bUnpausable = 1;
+
+//        short bank = sound->m_nBankSlotId;
+//        short wav = sound->m_nSoundIdInSlot;
+//        Log::printInfo("ped is speaking, bank: " + std::to_string(bank) + " wav: " + std::to_string(wav));
+//        Log::printInfo("sound unCancelable: " + std::to_string(sound->m_bUncancellable));
+//        Log::printInfo("sound unPauseable: " + std::to_string(sound->m_bUnpausable));
+    }
+
 	static void pipeline() {
 		//Log::printInfo("---------------Speak Pipeline-----------------");
 		processSpeak();
 		//Log::printInfo("processSpeak");
 		forceMuteWhenTimeout();
 		//Log::printInfo("forceMuteWhenTimeout");
+        detectAudioField();
 	}
 
 public:
 	static void install() { // install when init
-		Events::gameProcessEvent.Add(processSpeak);
-		Events::gameProcessEvent.Add(forceMuteWhenTimeout);
+		Events::gameProcessEvent.Add(pipeline);
 		injector::MakeJMP(0x5EFFE0, lockPriorityWhenSay); //didn't solve mute/crash bug, but may help
 		injector::MakeJMP(0x5EFFB0, lockPriorityWhenSayScript); //didn't solve mute/crash bug, but may help
 	}
@@ -187,14 +214,24 @@ public:
 		return speakBuf.size() < Config::getSpeakbufferSize();
 	}
 
-	static void addSpeak(CPed* ped, AudioPath audioPath, std::string content) {
+	static void addSpeak(CPed* ped, AudioPath audioPath, std::string content, bool isFirstOfFreeChat = false) {
 		SpeakTask speakTask;
 		speakTask.pedToSpeak = ped;
 		speakTask.audioToSpeak = audioPath;
 		speakTask.contentToSpeak = content;
 		std::this_thread::sleep_for(std::chrono::milliseconds(Config::getReinstTime()));
-		std::lock_guard<std::mutex> lock(bufMutex);
+		std::unique_lock<std::mutex> lock(bufMutex);
 		speakBuf.push(speakTask);
+        lock.unlock();
+        if (isFirstOfFreeChat) { // extra wait for free chat to generate, improve smoothness
+            std::unique_lock<std::mutex> lock2(extraWaitMutex);
+            extraWait = true;
+            lock2.unlock();
+            std::this_thread::sleep_for(std::chrono::milliseconds(Config::getFreeWaitTime()));
+            lock2.lock();
+            extraWait = false;
+            lock2.unlock();
+        }
 	}
 
 	static void autoAddSpeak(CPed* ped, AudioPath audioPath, std::string content) {

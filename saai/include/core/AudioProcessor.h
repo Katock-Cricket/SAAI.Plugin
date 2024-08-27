@@ -41,7 +41,7 @@ private:
 		std::unique_lock<std::mutex> lock(audioMutex);
         deleteAIBehFromAudioBuf(aiBeh);
 		lock.unlock();
-		Speak::addSpeak(ped, audioPath, content); // time costing
+		Speak::addSpeak(ped, audioPath, content, aiBeh->getIsFirstOfFreeChat()); // time costing
 	}
 
     static AIBeh* findNextBeh() {

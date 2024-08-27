@@ -7,11 +7,13 @@ private:
 	std::string context;
 	std::string content;
 	bool working;
+    bool isFirstOfFreeChat;
 
 public:
 	AIBeh() {
 		self = nullptr;
 		this->working = false;
+        this->isFirstOfFreeChat = false;
 	}
 
 	AIBeh(CPed* self) {
@@ -19,6 +21,7 @@ public:
 		this->context = "";
 		this->content = "";
 		this->working = false;
+        this->isFirstOfFreeChat = false;
 	}
 
 	CPed* getPed() {
@@ -52,6 +55,14 @@ public:
 	void finish() {
 		working = false;
 	}
+
+    void setIsFirstOfFreeChat(bool isFirst) {
+        isFirstOfFreeChat = isFirst;
+    }
+
+    bool getIsFirstOfFreeChat() {
+        return isFirstOfFreeChat;
+    }
 
     inline bool operator==(const AIBeh &aiBeh) const {
         return this->content == aiBeh.content;

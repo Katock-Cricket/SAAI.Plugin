@@ -27,3 +27,4 @@ int Config::chat_round = 5;
 int Config::speak_timeout = 6000;
 int Config::log_level = 0;
 int Config::num_workers = 10;
+int Config::free_wait_time = 0;
