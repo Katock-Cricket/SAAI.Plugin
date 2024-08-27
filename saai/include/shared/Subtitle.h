@@ -76,7 +76,7 @@ private:
 	static void print() {
 		CFont::SetProportional(true);
 		CFont::SetBackground(false, false);
-		CFont::SetScale(2.0f, 2.0f);
+		CFont::SetScale(1.5f, 3.0f);
 		CFont::SetOrientation(eFontAlignment::ALIGN_CENTER);
 		CFont::SetCentreSize(SCREEN_WIDTH * 2 / 3);
 		CFont::SetColor({ 255, 255, 255 });
@@ -103,11 +103,8 @@ private:
 	}
 
 	static void pipeline() {
-		//Log::printInfo("---------------Speak Pipeline-----------------");
 		pedSpeakSubtitle();
-		//Log::printInfo("pedSpeakSubtitle");
 		otherSubtitle();
-		//Log::printInfo("otherSubtitle");
 	}
 
 public:
@@ -115,8 +112,7 @@ public:
 	Subtitle() { }
 
 	static void install() { // install when init
-		Events::drawingEvent.Add(pedSpeakSubtitle);
-		Events::drawingEvent.Add(otherSubtitle);
+		Events::drawHudEvent.Add(pipeline);
 	}
 
 	static void uninstall() { // uninstall when shutdown
@@ -124,6 +120,12 @@ public:
 		activate = false;
 		pedSpeaking = nullptr;
 	}
+
+    static void forceStopRender() {
+        std::lock_guard<std::mutex> lock(subtitleMutex);
+        activate = false;
+        pedSpeaking = nullptr;
+    }
 
 	static void printSubtitle(std::string usr_content, CPed* ped = nullptr) {
 		std::lock_guard<std::mutex> lock(subtitleMutex);

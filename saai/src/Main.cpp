@@ -51,7 +51,7 @@ private:
 		PedSpawner::install();
 		Subtitle::install();
 		Speak::install();
-		//UnitTest::install();
+		UnitTest::install();
 		AIMain::install();
 	}
 
