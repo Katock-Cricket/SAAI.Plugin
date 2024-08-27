@@ -71,8 +71,7 @@ v1.1开发计划：
 - [x] 整理为CMake项目
 - [x] 优化TTS
 - [x] 将TTS单独分离增加一级流水线
-- [ ] AI整合进CPed类，取消AIPedPool
-- [ ] 优化Prompt
-- [ ] 试试Claude
+- [x] AI整合进CPed类，取消AIPedPool
+- [ ] 修复一些BUG
 
 联系开发者：[B站_Cyber蝈蝈总](https://space.bilibili.com/37706580)
