@@ -7,7 +7,7 @@
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 
-#include "utils.h"
+#include "Structs.h"
 #include "Config.h"
 
 class SVCClient {

@@ -5,7 +5,6 @@
 #include "CPed.h"
 #include "SVCClient.h"
 #include "Subtitle.h"
-#include "utils.h"
 
 typedef struct {
 	CPed* pedToSpeak;

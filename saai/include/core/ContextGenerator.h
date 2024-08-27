@@ -12,12 +12,12 @@ class ContextGenerator : public CheatActivate {
 private:
     static std::vector<CPed*> getPedCanFreeChat () {
         std::vector<CPed*> ret;
-        for (int i = 0; i < CPools::ms_pPedPool->m_nSize; i++) {
-            CPed *ped = CPools::ms_pPedPool->GetAt(i);
+        for (auto ped : CPools::ms_pPedPool) {
             if(ped == nullptr || !IsPedPointerValid(ped)){
                 continue;
             }
-            if(((AI*)ped->ai) != 0 && ((AI*)ped->ai)->getName()!= ""){ // have ai && is special npc
+            AI* ai = static_cast<AI*>(ped->ai);
+            if(ai != nullptr && ai->getName()!= ""){ // have ai && is special npc
                 ret.push_back(ped);
             }
         }
@@ -58,7 +58,7 @@ private:
 				if (ped == pedToSpeak) {
 					continue;
 				}
-				nameBuffer += ((AI*)ped->ai)->getName() + ", ";
+				nameBuffer += static_cast<AI*>(ped->ai)->getName() + ", ";
 			}
 			return Config::getMeetPrompt() + nameBuffer;
 		}
@@ -137,7 +137,7 @@ public:
 			return;
 		}
 		std::lock_guard<std::mutex> lock2(historyMutex);
-		history.push_back(Record(pedToSpeak, ((AI*)pedToSpeak->ai)->getName(), ""));
+		history.push_back(Record(pedToSpeak, static_cast<AI*>(pedToSpeak->ai)->getName(), ""));
 		AIBeh* aiBeh = new AIBeh(pedToSpeak);
 		aiBeh->setContext(context);
 		contentBuf.push(aiBeh);

@@ -15,6 +15,7 @@ file(GLOB HEADERS
         ${SDK}/shared/*.h
         ${SDK}/shared/game/*.h
         ${SDK}/shared/extensions/*.h
+        ${SDK}/shared/extensions/scripting/*.h
         ${SDK}/hooking/*.h
         ${SDK}/injector/*.hpp
 )
@@ -25,6 +26,7 @@ file(GLOB SOURCES
         ${SDK}/shared/*.cpp
         ${SDK}/shared/game/*.cpp
         ${SDK}/shared/extensions/*.cpp
+        ${SDK}/shared/extensions/scripting/*.cpp
         ${SDK}/hooking/*.cpp
 )
 list(REMOVE_ITEM SOURCES ${SDK}/shared/Audio.cpp)
@@ -39,6 +41,7 @@ target_include_directories(gtasa PUBLIC
         ${SDK}/shared/
         ${SDK}/shared/game/
         ${SDK}/shared/extensions/
+        ${SDK}/shared/extensions/scripting/
         ${SDK}/plugin_sa/game_sa/
 )
 target_link_directories(gtasa PUBLIC
@@ -49,5 +52,6 @@ target_sources(gtasa PRIVATE
         ${SDK}/plugin_sa/game_sa/
         ${SDK}/shared/game/
         ${SDK}/shared/extensions/
+        ${SDK}/shared/extensions/scripting/
 )
 target_link_libraries(gtasa bass)

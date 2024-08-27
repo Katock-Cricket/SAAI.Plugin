@@ -26,7 +26,7 @@ private:
 		}
 		std::string context = aiBeh->getContext();
 		Log::printInfo("Start generating content for the beh");
-		std::string content = ((AI*)ped->ai)->answer(context); // time costing
+		std::string content = static_cast<AI*>(ped->ai)->answer(context); // time costing
 		aiBeh->setContent(content);
 		if (content == "Error") {
 			Log::printError("'Error' don't be recorded in history");
